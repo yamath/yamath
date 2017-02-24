@@ -25,7 +25,7 @@ SECRET_KEY = 'jdnf+2*m%vce7**)&0g%5x^n01i#*9y-ab5w96@m#)6ayk$rq9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['yamath.pythonanywhere.com']
 
 
 # Application definition
