@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'yapp.apps.YappConfig',
 ]
 
 MIDDLEWARE = [
@@ -75,8 +76,18 @@ WSGI_APPLICATION = 'yamath.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'yamath$default',
+        'USER': 'yamath',
+        'PASSWORD': 'coitanra',
+        'HOST': 'yamath.mysql.pythonanywhere-services.com',
+    },
+    'TEST': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'yamath$test_default',
+        'USER': 'yamath',
+        'PASSWORD': 'coitanra',
+        'HOST': 'yamath.mysql.pythonanywhere-services.com',
     }
 }
 
