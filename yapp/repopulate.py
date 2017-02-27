@@ -4,6 +4,7 @@ from .models import Question, Score, Topic, TopicDependency, Answer
 # User
 def repopulate_users():
   User.objects.all().delete()
+  Score.objects.all().delete()
   users = [
     ('black',       'pass9019'),
     ('campero',     'pass9549'),
