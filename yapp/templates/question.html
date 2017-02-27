@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<p>{{ question.text|safe }}</p>
+<form method="post" action="{% url 'question' question.label %}" autocomplete="off">
+{% csrf_token %}
+<table>
+<tr>
+    <td>Risposta:</td>
+    <td><input type="text" name="answer" /></td>
+</tr>
+</table>
+
+<input type="submit" value="invia" />
+<input type="hidden" name="question_label" value="{{ question.label }}" />
+</form>
+
+
+{% endblock %}

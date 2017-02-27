@@ -2,12 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Topic(models.Model):
+  serial = models.CharField(max_length=4)
   description = models.CharField(max_length=40)
   content = models.TextField(default="This topic is not ready yet.")
-  taxonomy = models.CharField(max_length=13)
 
   def __str__(self):
-    return "%s (T%d)" % (self.description, self.pk)
+    return "%s (T%s)" % (self.description, self.serial)
 
 
 class TopicDependency(models.Model):
@@ -15,7 +15,7 @@ class TopicDependency(models.Model):
   post = models.ForeignKey('Topic', related_name='post')
   
   def __str__(self):
-    return "TD(%s before %s)" % (self.ante.pk, self.post.pk)
+    return "TD(%s before %s)" % (self.ante.serial, self.post.serial)
 
 
 class Question(models.Model):

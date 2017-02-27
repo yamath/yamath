@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<p>Benvenut* {{ user.username }}!</p>
+<hr />
+<p>Questi i tuoi risultati attuali:
+<ol>
+{% for t in info %}
+  <li>{{ t.0 }}: {{ t.2 }}% ... <a href="{% url 'question' t.1 %}">esercitati</a>!</li>
+{% endfor %}
+</ol>
+</p>
+{% else %}
+<p>Benvenuto nella pagina di allenamento. Per vedere il proprio profilo e fare allenamento effettuare il login.</p>
+{% endif %}
+
+{% endblock %}
