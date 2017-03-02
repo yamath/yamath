@@ -1,3 +1,4 @@
 db.sqlite3
+yamath/settings.py
 yapp/migrations/*
 *.pyc

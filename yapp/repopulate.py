@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from .models import Question, Score, Topic, TopicDependency, Answer
 
 # User
-def repopulate_users():
+def reset_users():
   User.objects.all().delete()
   Score.objects.all().delete()
   users = [
@@ -35,7 +35,7 @@ def repopulate_users():
     User.objects.create_user(u, 'nomail@example.com', p)
 
 # Topic
-def repopulate_topic():
+def reset_topics():
   Topic.objects.all().delete()
   topics = [
     ('3000', 'Grandezze orientate e numeri relativi'),
@@ -57,7 +57,7 @@ def repopulate_topic():
   for (ante, post) in topics_dependencies:
     TopicDependency(ante=Topic.objects.get(serial=ante), post=Topic.objects.get(serial=post)).save()
 
-def repopulate_questions():
+def reset_questions():
   Question.objects.all().delete()
   Answer.objects.all().delete()
   questions = [
