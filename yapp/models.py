@@ -3,11 +3,11 @@ from django.contrib.auth.models import User
 
 class Topic(models.Model):
   serial = models.CharField(max_length=4)
-  description = models.CharField(max_length=40)
+  description = models.CharField(max_length=80)
   content = models.TextField(default="This topic is not ready yet.")
 
   def __str__(self):
-    return "%s (T%s)" % (self.description, self.serial)
+    return "(T%s) %s" % (self.serial, self.description)
 
 
 class TopicDependency(models.Model):

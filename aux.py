@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from yapp.models import Score
+from yapp.models import Topic, TopicDependency, Question, Answer, Score
 users = [
     ('angulo',       'dacambiare'),
     ('cabrera',       'dacambiare'),
@@ -87,3 +87,37 @@ def reset_users(l):
   Score.objects.all().delete()
   for (u, p) in l:
     User.objects.create_user(u, 'nomail@example.com', p)
+
+def dump_database():
+    f = open('dump.py', 'w')
+    #TOPIC
+    s = "topic_info = ["
+    for t in Topic.objects.all():
+        s += repr((t.serial, t.description)) + ', '
+    s += ']\n'
+    f.write(s)
+    #TOPIC_DEPENDENCY
+    s = "topicdependency_info = ["
+    for t in TopicDependency.objects.all():
+        s += repr((t.ante.serial, t.post.serial)) + ', '
+    s += ']\n'
+    f.write(s)
+    #SCORE
+    s = "score_info = ["
+    for t in Score.objects.all():
+        s += repr((t.user.username, t.topic.serial, t.value)) + ', '
+    s += ']\n'
+    f.write(s)
+    #QUESTION
+    s = "question_info = ["
+    for t in Question.objects.all():
+        s += repr((int(t.pk), t.text, t.topic.serial, t.notes)) + ', '
+    s += ']\n'
+    f.write(s)
+    #ANSWERS
+    s = "answer_info = ["
+    for t in Answer.objects.all():
+        s += repr((t.question.pk, t.answer, t.status)) + ', '
+    s += ']\n'
+    f.write(s)
+    f.close()
