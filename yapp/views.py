@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from random import choice
-from .models import Question, Score, Topic, TopicDependency, Answer
+from .models import Classroom, ClassroomUser, Topic, Score, TopicClassroom, TopicDependency, Option, QuestionMultiple, QuestionBoolean, QuestionOpen
 from django.contrib import messages
 
 def index(request):
