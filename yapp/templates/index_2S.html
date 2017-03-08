@@ -7,7 +7,7 @@
 <hr />
 <p>Questi i tuoi risultati attuali:
 <ol>
-    <li>(5001) Equazioni numeriche intere. <a href="{% url 'question' 5001 %}">Esercitati!</a></li>
+    <li><span class="topic_{% if info_dict.5001 > 90 %}ok{% else %}todo{% endif %}">(5001) Equazioni numeriche intere.  Il tuo punteggio è {{ info_dict.5001 }}.</span> <a href="{% url 'question' 5001 %}">Esercitati!</a></li>
 
 <!--{% for tuple in info %}
   <li><span class="topic_{{ tuple.2 }}">{{ tuple.0.description }}: {{ tuple.1 }}% ...</span> {% if tuple.2 != 'far' %}<a href="{% url 'question' tuple.0.serial %}">esercitati</a>!{% endif %}</li>

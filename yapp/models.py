@@ -13,7 +13,7 @@ class Topic(models.Model):
 class TopicDependency(models.Model):
   ante = models.ForeignKey('Topic', related_name='ante')
   post = models.ForeignKey('Topic', related_name='post')
-  
+
   def __str__(self):
     return "TD(%s before %s)" % (self.ante.serial, self.post.serial)
 
@@ -37,9 +37,9 @@ class Answer(models.Model):
 
   def __str__(self):
     if len(self.answer)>20:
-      return "%s %s (%s...)" % (self.question.pk, self.status, self.answer[:17])
+      return "%s: %s (%s...)" % (self.question.pk, self.question.text, self.answer[:17])
     else:
-      return "%s %s (%s)" % (self.question.pk, self.status, self.answer)
+      return "%s: %s (%s)" % (self.question.pk, self.question.text, self.answer)
 
 
 class Score(models.Model):

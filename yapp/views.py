@@ -44,6 +44,7 @@ def index_3M(request):
   if request.user.is_authenticated():
     user = request.user
     info = []
+    info_dict = {}
     for t in Topic.objects.all():
       score_value = score_or_0(user=user, topic=t)
       if score_value > 90:
@@ -53,8 +54,9 @@ def index_3M(request):
       else:
         topic_status = 'far'
       info.append((t, score_value, topic_status))
+      info_dict[t.serial] = score_value
       info = sorted(info, key=lambda x: 1 if x[2]=='ok' else (2 if x[2]=='todo' else 3))
-    return render(request, 'index_3M.html', {'info':info})
+    return render(request, 'index_3M.html', {'info':info, 'info_dict':info_dict})
   else:
     return render(request, 'index.html')
 
@@ -71,6 +73,7 @@ def index_1A(request):
   if request.user.is_authenticated():
     user = request.user
     info = []
+    info_dict = {}
     for t in Topic.objects.all():
       score_value = score_or_0(user=user, topic=t)
       if score_value > 90:
@@ -80,8 +83,9 @@ def index_1A(request):
       else:
         topic_status = 'far'
       info.append((t, score_value, topic_status))
+      info_dict[t.serial] = score_value
       info = sorted(info, key=lambda x: 1 if x[2]=='ok' else (2 if x[2]=='todo' else 3))
-    return render(request, 'index_1A.html', {'info':info})
+    return render(request, 'index_1A.html', {'info':info, 'info_dict':info_dict})
   else:
     return render(request, 'index.html')
 
@@ -98,6 +102,7 @@ def index_2A(request):
   if request.user.is_authenticated():
     user = request.user
     info = []
+    info_dict = {}
     for t in Topic.objects.all():
       score_value = score_or_0(user=user, topic=t)
       if score_value > 90:
@@ -107,9 +112,10 @@ def index_2A(request):
       else:
         topic_status = 'far'
       info.append((t, score_value, topic_status))
+      info_dict[t.serial] = score_value
       info = sorted(info, key=lambda x: 1 if x[2]=='ok' else (2 if x[2]=='todo' else 3))
     request.session['classe'] = '2A'
-    return render(request, 'index_2A.html', {'info':info})
+    return render(request, 'index_2A.html', {'info':info, 'info_dict':info_dict})
   else:
     return render(request, 'index.html')
 
@@ -126,6 +132,7 @@ def index_2S(request):
   if request.user.is_authenticated():
     user = request.user
     info = []
+    info_dict = {}
     for t in Topic.objects.all():
       score_value = score_or_0(user=user, topic=t)
       if score_value > 90:
@@ -135,9 +142,10 @@ def index_2S(request):
       else:
         topic_status = 'far'
       info.append((t, score_value, topic_status))
+      info_dict[t.serial] = score_value
       info = sorted(info, key=lambda x: 1 if x[2]=='ok' else (2 if x[2]=='todo' else 3))
     request.session['classe'] = '2S'
-    return render(request, 'index_2S.html', {'info':info})
+    return render(request, 'index_2S.html', {'info':info, 'info_dict':info_dict})
   else:
     return render(request, 'index.html')
 
