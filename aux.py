@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from yapp.models import Classroom, ClassroomUser, Topic, Score, TopicClassroom, TopicDependency, Option, QuestionMultiple, QuestionBoolean, QuestionOpen
+import dump
+
 users = [
     ('ART2', 'angulo',       'dacambiare'),
     ('ART2', 'cabrera',       'dacambiare'),
@@ -88,6 +90,19 @@ def reset_users(l):
   for (c, u, p) in l:
     User.objects.create_user(u, 'nomail@example.com', p)
 
+def reset_database():
+    Classroom.objects.all().delete()
+    ClassroomUser.objects.all().delete()
+    Topic.objects.all().delete()
+    Score.objects.all().delete()
+    TopicClassroom.objects.all().delete()
+    TopicDependency.objects.all().delete()
+    Option.objects.all().delete()
+    QuestionMultiple.objects.all().delete()
+    QuestionBoolean.objects.all().delete()
+    QuestionOpen.objects.all().delete()
+
+
 def dump_database():
     f = open('dump.py', 'w')
     #TOPIC
@@ -127,3 +142,32 @@ def extoma():
         Classroom(serial=serial).save()
     for (c, u, p) in users:
         ClassroomUser(user=User.objects.get(username=u), classroom=Classroom.objects.get(serial=c)).save()
+    for (s, t) in dump.topic_info:
+        Topic(serial=s, description=t).save()
+    for (u, t, v) in dump.score_info:
+        Score(user=User.objects.get(username=u), topic=Topic.objects.get(serial=t), value=v).save()
+    TopicClassroom(topic=Topic.objects.get(serial='3000'), classroom=Classroom.objects.get(serial='MED3')).save()
+    TopicClassroom(topic=Topic.objects.get(serial='3001'), classroom=Classroom.objects.get(serial='MED3')).save()
+    TopicClassroom(topic=Topic.objects.get(serial='3002'), classroom=Classroom.objects.get(serial='MED3')).save()
+    TopicClassroom(topic=Topic.objects.get(serial='3003'), classroom=Classroom.objects.get(serial='MED3')).save()
+    TopicClassroom(topic=Topic.objects.get(serial='3004'), classroom=Classroom.objects.get(serial='MED3')).save()
+    TopicClassroom(topic=Topic.objects.get(serial='3005'), classroom=Classroom.objects.get(serial='MED3')).save()
+    TopicClassroom(topic=Topic.objects.get(serial='4001'), classroom=Classroom.objects.get(serial='ART1')).save()
+    TopicClassroom(topic=Topic.objects.get(serial='5001'), classroom=Classroom.objects.get(serial='ART2')).save()
+    TopicClassroom(topic=Topic.objects.get(serial='5001'), classroom=Classroom.objects.get(serial='SCI2')).save()
+    for (a, p) in dump.topicdependency_info:
+        TopicDependency(ante=Topic.objects.get(serial=a), post=Topic.objects.get(serial=p)).save()
+    for (pk, te, to, no) in dump.question_info:
+        option_answers = []
+        for (apk, ate, ast) in dump.answer_info:
+            if apk==pk:
+                o = Option(text=ate, status=(ast=='ok'))
+                o.save()
+                option_answers.append(o)
+        q = QuestionOpen(topic=Topic.objects.get(serial=to), text=te)
+        q.save()
+        for o in option_answers:
+            q.options.add(o)
+        print(q.options.all())
+
+
