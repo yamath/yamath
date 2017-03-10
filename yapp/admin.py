@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Classroom, ClassroomUser, Topic, Score, TopicClassroom, TopicDependency, Option, QuestionMultiple, QuestionBoolean, QuestionOpen
+from .models import Classroom, ClassroomUser, Topic, Score, TopicClassroom, TopicDependency, Option, QuestionMultiple, QuestionBoolean, QuestionOpen, Claim
 
 admin.site.register(Classroom)
 admin.site.register(ClassroomUser)
@@ -12,3 +12,4 @@ admin.site.register(Option)
 admin.site.register(QuestionMultiple)
 admin.site.register(QuestionBoolean)
 admin.site.register(QuestionOpen)
+admin.site.register(Claim)

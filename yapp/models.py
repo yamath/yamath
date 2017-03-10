@@ -76,3 +76,12 @@ class QuestionOpen(models.Model):
 
     def __str__(self):
         return "(QO%d %s)" % (self.pk, self.text)
+
+class Claim(models.Model):
+    username = models.CharField(max_length=20)
+    topic = models.CharField(max_length=4)
+    questionpk = models.IntegerField()
+    answer = models.TextField()
+
+    def __str__(self):
+        return "(X %s about %d)" % (self.username, self.questionpk)

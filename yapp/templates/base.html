@@ -53,6 +53,16 @@
                 <ul class="nav navbar-nav">
                     {% if user.is_authenticated %}
                     <li>
+                        <form class="navbar-form form-inline" method="post" action="{% url 'claim' %}" autocomplete="off">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Qualcosa non va</button>
+                        <input type="hidden" name="session_user" value="{{ session_user }}" />
+                        <input type="hidden" name="session_topic" value="{{ session_topic }}" />
+                        <input type="hidden" name="session_answer" value="{{ session_answer }}" />
+                        <input type="hidden" name="session_questionpk" value="{{ session_questionpk }}" />
+                        </form>
+                    </li>
+                    <li>
                         <a href="{% url 'password_change' %}">Cambia password</a>
                     </li>
                     <li>

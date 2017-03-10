@@ -1,0 +1,25 @@
+body {
+  font-size: 15pt;
+}
+
+.large {
+  font-size: 120%;
+}
+
+.Large {
+  font-size: 160%;
+}
+
+.LARGE {
+  font-size: 200%;
+}
+
+.header .row {
+  margin-bottom: 5px;
+  margin-top: 5px;
+  padding: 10px;
+}
+
+.questions .row div {
+    padding: 20px 20px;
+}
