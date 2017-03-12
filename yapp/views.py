@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.shortcuts import redirect, render
-from random import choice
+from random import choice, shuffle
 from .models import Classroom, ClassroomUser, Topic, Score, TopicClassroom, TopicDependency, Option, QuestionMultiple, QuestionBoolean, QuestionOpen, Claim
 from django.contrib import messages
 
@@ -53,24 +53,53 @@ def index(request):
 def question(request, topic_serial):
   topic = Topic.objects.get(serial=topic_serial)
   if 'question_pk' not in request.session:
-    question = choice(QuestionOpen.objects.filter(topic=topic))
+    questions_list = list(QuestionMultiple.objects.filter(topic=topic)) + list(QuestionOpen.objects.filter(topic=topic)) + list(QuestionBoolean.objects.filter(topic=topic))
+    question = choice(questions_list)
     request.session['question_pk'] = question.pk
-    return render(request, 'question.html', {'question':question, 'topic':topic, 'session_user':request.user.username, 'session_topic':topic.serial, 'session_questionpk':question.pk, 'session_answer':''})
+    if isinstance(question, QuestionMultiple ):
+        request.session['question_type'] = 'multiple'
+        question_options = list(question.options.all())[:]
+        shuffle(question_options)
+        return render(request, 'question_multiple.html', {'question':question, 'question_options':question_options, 'topic':topic, 'session_user':request.user.username, 'session_topic':topic.serial, 'session_questionpk':question.pk, 'session_answer':''})
+    elif isinstance(question, QuestionBoolean):
+        pass
+    elif isinstance(question, QuestionOpen):
+        request.session['question_type'] = 'open'
+        return render(request, 'question.html', {'question':question, 'topic':topic, 'session_user':request.user.username, 'session_topic':topic.serial, 'session_questionpk':question.pk, 'session_answer':''})
   else:
     try:
       score = Score.objects.get(user=request.user, topic=topic)
     except Score.DoesNotExist:
       score = Score(user=request.user, topic=topic, value=0)
-    options = QuestionOpen.objects.get(pk=request.session['question_pk']).options.all()
-    try:
-      if options.get(text=request.POST['answer']).status:
-        score.value = min(100, score.value+10)
-        messages.add_message(request, messages.SUCCESS, 'Risposta esatta!')
-      else:
-        raise ValueError
-    except:
-      score.value = max(0, score.value-20)
-      messages.add_message(request, messages.ERROR, 'Risposta sbagliata.')
+    if request.session['question_type']=='multiple':
+        question = QuestionMultiple.objects.get(pk=request.session['question_pk'])
+        options = question.options.all()
+        correct = True
+        #raise ValueError(request.POST)
+        for o in options:
+            o_label = 'O' + str(o.pk)
+            if (o_label in request.POST) != o.status:
+                correct = False
+        if correct:
+            score.value = min(100, score.value+10)
+            messages.add_message(request, messages.SUCCESS, 'Risposta esatta!')
+        else:
+            score.value = max(0, score.value-20)
+            messages.add_message(request, messages.ERROR, 'Risposta sbagliata.')
+    elif request.session['question_type']=='boolean':
+        question = QuestionBoolean.objects.get(pk=request.session['question_pk'])
+    elif request.session['question_type']=='open':
+        question = QuestionOpen.objects.get(pk=request.session['question_pk'])
+        options = question.options.all()
+        try:
+          if options.get(text=request.POST['answer']).status:
+            score.value = min(100, score.value+10)
+            messages.add_message(request, messages.SUCCESS, 'Risposta esatta!')
+          else:
+            raise ValueError
+        except:
+          score.value = max(0, score.value-20)
+          messages.add_message(request, messages.ERROR, 'Risposta sbagliata.')
     score.save()
     qpk = request.session['question_pk']
     del request.session['question_pk']
@@ -84,3 +113,20 @@ def claim(request):
     Claim(username=request.POST['session_user'], questionpk=request.POST['session_questionpk'], topic=request.POST['session_topic'], answer=request.POST['session_answer']).save()
     messages.add_message(request, messages.SUCCESS, 'Grazie per la collaborazione!')
     return redirect('index')
+
+def tools_add_questionmultiple(request):
+    if request.method == 'GET':
+        return render(request, 'add_questionmultiple.html')
+    elif request.method == 'POST':
+        qm = QuestionMultiple(topic=Topic.objects.get(serial=request.POST['topic_serial']), text=request.POST['text'], notes=request.POST['notes'])
+        qm.save()
+        for i in range(1, 7):
+            if request.POST['true_option'+str(i)]!='':
+                o = Option(text=request.POST['true_option'+str(i)], status=True)
+                o.save()
+                qm.options.add(o)
+            if request.POST['false_option'+str(i)]!='':
+                o = Option(text=request.POST['false_option'+str(i)], status=False)
+                o.save()
+                qm.options.add(o)
+        return render(request, 'add_questionmultiple.html', {'topic_serial':request.POST['topic_serial']})

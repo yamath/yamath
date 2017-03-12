@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<p>{{ question.text|safe }}</p>
+<form method="post" action="{% url 'tools_add_questionmultiple' %}" autocomplete="off">
+{% csrf_token %}
+<p>Topic<input type="text" name="topic_serial" value="{{ topic_serial }}"/></p>
+<p>Text<input type="text" name="text"/></p>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6">
+            <p>Opzioni vere</p>
+            <p>TOp1<input type="text" name="true_option1"/></p>
+            <p>TOp2<input type="text" name="true_option2"/></p>
+            <p>TOp3<input type="text" name="true_option3"/></p>
+            <p>TOp4<input type="text" name="true_option4"/></p>
+            <p>TOp5<input type="text" name="true_option5"/></p>
+            <p>TOp6<input type="text" name="true_option6"/></p>
+        </div>
+        <div class="col-xs-6">
+            <p>Opzioni false</p>
+            <p>FOp1<input type="text" name="false_option1"/></p>
+            <p>FOp2<input type="text" name="false_option2"/></p>
+            <p>FOp3<input type="text" name="false_option3"/></p>
+            <p>FOp4<input type="text" name="false_option4"/></p>
+            <p>FOp5<input type="text" name="false_option5"/></p>
+            <p>FOp6<input type="text" name="false_option6"/></p>
+        </div>
+    </div>
+</div>
+<p>Notes<input type="text" name="notes" value="Seleziona tutte le risposte corrette e poi premi invia."/></p>
+<input type="submit" value="invia" />
+</form>
+
+{% endblock %}
