@@ -72,7 +72,7 @@ class QuestionOpen(models.Model):
     topic = models.ForeignKey('Topic', related_name='QO_topic')
     text = models.TextField()
     options = models.ManyToManyField('Option')
-    notes = models.TextField(default="Inserisci la risposta corretta e poi premi invia.")
+    notes = models.TextField(default="Inserisci la risposta corretta e poi premi invia.<br />Inserisci i risultati positivi senza segno +.<br />Inserisci i risultati positivi con il segno -, senza spazi.<br />Inserisci i risultati decimali con il punto, non con la virgola.<br />Inserisci le frazioni con il segno / a separare numeratore e divisore, ridotte ai minimi termini, senza spazi.")
 
     def __str__(self):
         return "(QO%d %s)" % (self.pk, self.text)

@@ -62,7 +62,8 @@ def question(request, topic_serial):
         shuffle(question_options)
         return render(request, 'question_multiple.html', {'question':question, 'question_options':question_options, 'topic':topic, 'session_user':request.user.username, 'session_topic':topic.serial, 'session_questionpk':question.pk, 'session_answer':''})
     elif isinstance(question, QuestionBoolean):
-        pass
+        request.session['question_type'] = 'boolean'
+        return render(request, 'question_boolean.html', {'question':question, 'topic':topic, 'session_user':request.user.username, 'session_topic':topic.serial, 'session_questionpk':question.pk, 'session_answer':''})
     elif isinstance(question, QuestionOpen):
         request.session['question_type'] = 'open'
         return render(request, 'question.html', {'question':question, 'topic':topic, 'session_user':request.user.username, 'session_topic':topic.serial, 'session_questionpk':question.pk, 'session_answer':''})
@@ -88,6 +89,12 @@ def question(request, topic_serial):
             messages.add_message(request, messages.ERROR, 'Risposta sbagliata.')
     elif request.session['question_type']=='boolean':
         question = QuestionBoolean.objects.get(pk=request.session['question_pk'])
+        if ('OTrue' in request.POST) == question.status:
+            score.value = min(100, score.value+10)
+            messages.add_message(request, messages.SUCCESS, 'Risposta esatta!')
+        else:
+            score.value = max(0, score.value-20)
+            messages.add_message(request, messages.ERROR, 'Risposta sbagliata.')
     elif request.session['question_type']=='open':
         question = QuestionOpen.objects.get(pk=request.session['question_pk'])
         options = question.options.all()

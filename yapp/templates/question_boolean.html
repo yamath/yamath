@@ -6,17 +6,15 @@
 <p>{{ question.text|safe }}</p>
 <form method="post" action="{% url 'question' topic.serial %}" autocomplete="off">
 {% csrf_token %}
-<table>
-<tr>
-    <td>Risposta:</td>
-    <td><input type="text" name="answer" /></td>
-</tr>
-</table>
 
+
+<p><input type="radio" name="OTrue" value="OTrue" id="OTrue"/><label for="OTrue"> Vero</label></p>
+<p><input type="radio" name="OFalse" value="OFalse" id="OFalse"/><label for="OFalse"> Falso</label></p>
+
+<br />
+<p><em>{{ question.notes|safe }}</em></p>
 <input type="submit" value="invia" />
 <input type="hidden" name="topic_serial" value="{{ topic.serial }}" />
 </form>
-
-<p><em>{{ question.notes|safe }}</em></p>
 
 {% endblock %}

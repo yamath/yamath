@@ -12,9 +12,9 @@
 {% endfor %}
 
 <br />
-<p><em>{{ question.notes|safe }}</em></p>
 <input type="submit" value="invia" />
 <input type="hidden" name="topic_serial" value="{{ topic.serial }}" />
 </form>
 
+<p><em>{{ question.notes|safe }}</em></p>
 {% endblock %}
