@@ -8,7 +8,7 @@
 <p>Questi i tuoi risultati attuali:
 <ol>
 {% for tuple in info %}
-  <li><span class="topic_{{ tuple.2 }}">{{ tuple.0.description }}: {{ tuple.1 }}% ...</span> {% if tuple.2 != 'far' %}<a href="{% url 'question' tuple.0.serial %}">esercitati</a>!{% endif %}</li>
+  <li><span class="topic_{{ tuple.2 }}">{{ tuple.0.description }}: {{ tuple.1 }}% ...</span> <a href="{% url 'question' tuple.0.serial %}">esercitati</a>!</li>
 {% endfor %}
 </ol>
 </p>

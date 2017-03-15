@@ -17,10 +17,13 @@ def index(request):
     pass
   if request.user.is_authenticated():
     user = request.user
-    classroom = ClassroomUser.objects.get(user=user).classroom
     info = []
-    for tc in TopicClassroom.objects.filter(classroom=classroom):
-      t = tc.topic
+    topics = []
+    for cu in ClassroomUser.objects.filter(user=user):
+        for tc in TopicClassroom.objects.filter(classroom=cu.classroom):
+            topics.append(tc.topic)
+    topics = list(set(topics))
+    for t in topics:
       score_value = score_or_0(user=user, topic=t)
       if score_value > 90:
         topic_status = 'ok'
