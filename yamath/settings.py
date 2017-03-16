@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'yapp.apps.YappConfig',
+    'backend.apps.BackendConfig',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Topics_info</h1>
+{% for infodict in info|dictsort:'serial' %}
+<p>
+    {{ infodict.serial }}: {{ infodict.topic.description }}<br />
+    Classi: {% for classroom in infodict.classrooms %}
+            <span>{{ classroom.serial }}, </span>
+            {% endfor %}<br />
+    Antes:  {% for ante in infodict.antes %}
+            <span>{{ ante.serial }}, </span>
+            {% endfor %}<br />
+    Posts:  {% for post in infodict.posts %}
+            <span>{{ post.serial }}, </span>
+            {% endfor %}<br />
+    <a href="{% url 'topic_questions' infodict.serial %}" >Questions:</a> {{ infodict.questions }}
+    <hr />
+</p>
+{% endfor %}
+
+{% endblock %}

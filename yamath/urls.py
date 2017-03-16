@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^yapp/', include('yapp.urls')),
+    url(r'^backend/', include('backend.urls')),
 ]
