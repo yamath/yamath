@@ -22,6 +22,6 @@ urlpatterns = [
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^yapp/', include('yapp.urls')),
-    url(r'^backend/', include('backend.urls')),
-    url(r'^blooming/', include('blooming.urls')),
+    url(r'^backend/', include('backend.urls', namespace='backend')),
+    url(r'^blooming/', include('blooming.urls', namespace='blooming')),
 ]
