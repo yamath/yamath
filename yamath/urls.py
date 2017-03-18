@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^yapp/', include('yapp.urls')),
     url(r'^backend/', include('backend.urls')),
+    url(r'^blooming/', include('blooming.urls')),
 ]

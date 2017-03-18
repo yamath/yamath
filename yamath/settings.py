@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'yapp.apps.YappConfig',
     'backend.apps.BackendConfig',
+    'blooming.apps.BloomingConfig',
 ]
 
 MIDDLEWARE = [
