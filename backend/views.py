@@ -38,20 +38,20 @@ def classroom_details(request, serial):
         classroom.save()
         return render(request, 'backend/classroom_details.html', {'classroom':classroom})
 
+def topics(request):
+    return render(request, 'backend/topics.html', {'topics':blooming.Topic.objects.all()})
 
-def topics_info(request):
-    info = [ { 'serial':t.serial,
-               'topic':t,
-               'classrooms':( tc.classroom for tc in TopicClassroom.objects.filter(topic=t)),
-               'antes':( td.ante for td in TopicDependency.objects.filter(post=t)),
-               'posts':( td.post for td in TopicDependency.objects.filter(ante=t)),
-               'questions': len(tuple(QuestionBoolean.objects.filter(topic=t))+
-                            tuple(QuestionMultiple.objects.filter(topic=t))+
-                            tuple(QuestionOpen.objects.filter(topic=t)))
-              } for t in Topic.objects.all() ]
-    return render(request, 'backend/topics_info.html', {'info':info})
-
-def topic_questions(request, topic_serial):
-    t = Topic.objects.get(serial=topic_serial)
-    questions = tuple(QuestionBoolean.objects.filter(topic=t))+tuple(QuestionMultiple.objects.filter(topic=t))+tuple(QuestionOpen.objects.filter(topic=t))
-    return render(request, 'backend/topic_questions.html', {'topic':t, 'questions':questions})
+def topic_details(request, pk):
+    topic = blooming.Topic.objects.get(pk=pk)
+    classrooms = blooming.Classroom.objects.all()
+    if request.method == 'GET':
+        return render(request, 'backend/topic_details.html', {'topic':topic, 'classrooms':classrooms})
+    elif request.method == 'POST':
+        topic.update_antes([ key[15:] for key in request.POST.keys() if key[:15]=='antes_checkbox_' ] + [request.POST['new_ante']])
+        topic.update_posts([ key[15:] for key in request.POST.keys() if key[:15]=='posts_checkbox_' ] + [request.POST['new_post']])
+        topic.update_classrooms([ key[19:] for key in request.POST.keys() if key[:19]=='classroom_checkbox_' ])
+        topic.text = request.POST['text']
+        topic.bloom_index = request.POST['bloom_index']
+        topic.mobile = 'mobile' in request.POST
+        topic.save()
+        return render(request, 'backend/topic_details.html', {'topic':topic, 'classrooms':classrooms})

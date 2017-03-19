@@ -42,7 +42,7 @@ class Classroom(models.Model):
         return [ cb.bloomer for cb in ClassroomBloomer.objects.filter(classroom=self) ]
 
     def _get_topics(self):
-        return None
+        return list({ tc.topic for tc in TopicClassroom.objects.filter(classroom=self) })
 
     def update_bloomers(self, bloomers_username_list):
         bloomers_to_add = (set(bloomers_username_list) - set([ b.user.username for b in self.bloomers ])) & set([ b.user.username for b in Bloomer.objects.all() ])
@@ -60,7 +60,7 @@ class ClassroomBloomer(models.Model):
     classroom = models.ForeignKey('Classroom', related_name="classroombloomer_classroom")
 
 class Topic(models.Model):
-    text = models.CharField(max_length=40)
+    text = models.CharField(max_length=80)
     bloom_index = models.IntegerField(  blank=True, null=True,
                                         choices=(   (1, 'remembering'),
                                                     (2, 'understanding'),
@@ -69,26 +69,51 @@ class Topic(models.Model):
                                                     (5, 'evaluating'),
                                                     (6, 'creating'), ))
     mobile = models.BooleanField(default=False)
-    _antes = models.ManyToManyField('Topic', blank=True)
 
-    def __get_classrooms(self):
-        return list(Classroom.objects.filter(_topics=self))
+    def update_antes(self, antes_pk_list):
+        antes_to_add = (set(antes_pk_list) - set([ str(a.pk) for a in self.antes ])) & set([ str(t.pk) for t in Topic.objects.all() ])
+        antes_to_delete = set([ str(a.pk) for a in self.antes ]) - set(antes_pk_list)
+        for pk in antes_to_add:
+            TopicDependency(ante=Topic.objects.get(pk=int(pk)), post=self).save()
+        for pk in antes_to_delete:
+            TopicDependency.objects.get(ante=Topic.objects.get(pk=int(pk)), post=self).delete()
 
-    def __get_students(self):
-        return [ user for user in classroom.students for classroom in Classroom.objects.filter(_topic=self) ]
+    def update_posts(self, posts_pk_list):
+        posts_to_add = (set(posts_pk_list) - set([ str(p.pk) for p in self.posts ])) & set([ str(t.pk) for t in Topic.objects.all() ])
+        posts_to_delete = set([ str(p.pk) for p in self.posts ]) - set(posts_pk_lis])
+        for pk in posts_to_add:
+            TopicDependency(ante=self, post=Topic.objects.get(pk=int(pk))).save()
+        for pk in posts_to_delete:
+            TopicDependency.objects.get(ante=self, post=Topic.objects.get(pk=int(pk))).delete()
 
-    def __get_professors(self):
-        return [ user for user in classroom.professors for classroom in Classroom.objects.filter(_topic=self) ]
+    def update_classrooms(self, classrooms_serial_list):
+        classrooms_to_add = set(classrooms_serial_list) - set([ c.serial for c in self.classrooms ])
+        classrooms_to_delete = set([ c.serial for c in self.classrooms ]) - set(classrooms_serial_list)
+        for serial in classrooms_to_add:
+            TopicClassroom(topic=self, classroom=Classroom.objects.get(serial=serial)).save()
+        for serial in classrooms_to_delete:
+            TopicClassroom.objects.get(topic=self, classroom=Classroom.objects.get(serial=serial)).delete()
 
-    def __get_questions(self):
-        return list(Question.objects.filter(topic=self))
+    def _get_antes(self):
+        return list({ td.ante for td in TopicDependency.objects.filter(post=self) })
 
-    classrooms = property(__get_classrooms)
-    students = property(__get_students)
-    professors = property(__get_professors)
+    def _get_classrooms(self):
+        return list({ tc.classroom for tc in TopicClassroom.objects.filter(topic=self) })
 
-    #def __str__(self):
-    #    return "%s (T%s)" % (self.description, self.serial)
+    def _get_posts(self):
+        return list({ td.post for td in TopicDependency.objects.filter(ante=self) })
+
+    antes = property(_get_antes)
+    posts = property(_get_posts)
+    classrooms = property(_get_classrooms)
+
+class TopicDependency(models.Model):
+    ante = models.ForeignKey('Topic', related_name='topicdependency_ante')
+    post = models.ForeignKey('Topic', related_name='topicdependency_post')
+
+class TopicClassroom(models.Model):
+    topic = models.ForeignKey('Topic', related_name='topicclassroom_topic')
+    classroom = models.ForeignKey('Classroom', related_name='topicclassroom_classroom')
 
 class Option(models.Model):
     user = models.ForeignKey(User, blank=True, null=True)

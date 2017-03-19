@@ -9,6 +9,12 @@
     <li><a href="{% url 'backend:bloomer_details' bloomer.user.username %}">{{ bloomer.user.username }}</a></li>
     {% endfor %}
 </ol></p>
+<p>Topics for this classroom:
+<ol>
+    {% for topic in classroom.topics %}
+    <li><a href="{% url 'backend:topic_details' topic.pk %}">{{ topic.pk }}</a></li>
+    {% endfor %}
+</ol></p>
 <hr />
 <form method="post" action="{% url 'backend:classroom_details' classroom.serial %}" autocomplete="off">
 {% csrf_token %}

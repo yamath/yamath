@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Topics</h1>
+<ol>
+{% for topic in topics %}
+    <li>Topic <a href="{% url 'backend:topic_details' topic.pk %}">{{ topic.pk }}</a>: {{ topic.text }}</li>
+{% endfor %}
+</ol>
+
+{% endblock %}
