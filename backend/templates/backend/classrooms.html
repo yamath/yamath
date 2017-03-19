@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<p>Classrooms:
+<ol>
+{% for classroom in classrooms %}
+    <li>Classroom <a href="{% url 'backend:classroom_details' classroom.serial %}">{{ classroom.serial }}</a></li>
+{% endfor %}
+</ol>
+</p>
+
+{% endblock %}

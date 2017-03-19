@@ -15,7 +15,7 @@ def bloomer_details(request, username):
     bloomer = blooming.Bloomer.objects.get(user=User.objects.get(username=username))
     classrooms = blooming.Classroom.objects.all()
     if request.method == 'GET':
-        return render(request, 'backend/bloomer_detail.html', {'bloomer':bloomer, 'classrooms':classrooms})
+        return render(request, 'backend/bloomer_details.html', {'bloomer':bloomer, 'classrooms':classrooms})
     elif request.method == 'POST':
         bloomer.first_name = request.POST['first_name']
         bloomer.last_name = request.POST['last_name']
@@ -23,7 +23,7 @@ def bloomer_details(request, username):
         bloomer.professor = 'professor' in request.POST
         bloomer.save()
         bloomer.update_classrooms([ key[-4:] for key in request.POST.keys() if key[:19]=='classroom_checkbox_' ])
-        return render(request, 'backend/bloomer_detail.html', {'bloomer':bloomer, 'classrooms':classrooms})
+        return render(request, 'backend/bloomer_details.html', {'bloomer':bloomer, 'classrooms':classrooms})
 
 def classrooms(request):
     return render(request, 'backend/classrooms.html', {'classrooms':blooming.Classroom.objects.all()})
@@ -31,9 +31,13 @@ def classrooms(request):
 def classroom_details(request, serial):
     classroom = blooming.Classroom.objects.get(serial=serial)
     if request.method == 'GET':
-        return render(request, 'backend/classroom_detail.html', {'classroom':classroom})
+        return render(request, 'backend/classroom_details.html', {'classroom':classroom})
     elif request.method == 'POST':
-        pass
+        classroom.update_bloomers([ key[17:] for key in request.POST.keys() if key[:17]=='bloomer_checkbox_' ] + [request.POST['new_bloomer']])
+        classroom.serial = request.POST['serial']
+        classroom.save()
+        return render(request, 'backend/classroom_details.html', {'classroom':classroom})
+
 
 def topics_info(request):
     info = [ { 'serial':t.serial,

@@ -44,6 +44,14 @@ class Classroom(models.Model):
     def _get_topics(self):
         return None
 
+    def update_bloomers(self, bloomers_username_list):
+        bloomers_to_add = (set(bloomers_username_list) - set([ b.user.username for b in self.bloomers ])) & set([ b.user.username for b in Bloomer.objects.all() ])
+        bloomers_to_delete = set([ b.user.username for b in self.bloomers ]) - set(bloomers_username_list)
+        for username in bloomers_to_add:
+            ClassroomBloomer(bloomer=Bloomer.objects.get(user=User.objects.get(username=username)), classroom=self).save()
+        for username in bloomers_to_delete:
+            ClassroomBloomer.objects.get(bloomer=Bloomer.objects.get(user=User.objects.get(username=username)), classroom=self).delete()
+
     bloomers = property(_get_bloomers)
     topics = property(_get_topics)
 
