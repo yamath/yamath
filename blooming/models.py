@@ -2,47 +2,54 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-def validate_user_is_professor(user):
-    try:
-        if isinstance(user, str):
-            user = User.objects.get(username=user)
-        assert UserInfo.objects.get(user=user).professor
-    except:
-        raise ValidationError
+#def validate_user_is_professor(user):
+#    try:
+#        if isinstance(user, str):
+#            user = User.objects.get(username=user)
+#        assert UserInfo.objects.get(user=user).professor
+#    except:
+#        raise ValidationError
 
-class Classroom(models.Model):
-    serial = models.CharField(max_length=8, unique=True)
-    _topics = models.ManyToManyField('Topic', related_name='classroom_topic')
-
-    def __get_students(self):
-        return list(Info.objects.filter(classroom=self, professor=False).select_related('user'))
-
-    def __get_professors(self):
-        return list(Info.objects.filter(classroom=self, professor=True).select_related('user'))
-
-    def __get_topics(self):
-        return list(self._topics.all())
-
-    students = property(__get_students)
-    professors = property(__get_professors)
-    topics = property(__get_topics)
-
-class Info(models.Model):
+class Bloomer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=40, blank=True, null=True)
     last_name = models.CharField(max_length=40, blank=True, null=True)
     email = models.CharField(max_length=40, blank=True, null=True)
     professor = models.BooleanField(default=False)
-    _classrooms = models.ManyToManyField('Classroom', related_name="info_classroom", blank=True)
 
-    def __get_classrooms(self):
-        return list(self._classrooms.all())
+    def _get_classrooms(self):
+        return [ cb.classroom for cb in ClassroomBloomer.objects.filter(bloomer=self) ]
 
-    def __get_topics(self):
-        return [ topic.serial for classroom in self.classrooms for topic in classroom.topics ]
+    def _get_topics(self):
+        return None
 
-    classrooms = property(__get_classrooms)
-    topics = property(__get_topics)
+    def update_classrooms(self, classrooms_serial_list):
+        classrooms_to_add = set(classrooms_serial_list) - set([ c.serial for c in self.classrooms ])
+        classrooms_to_delete = set([ c.serial for c in self.classrooms ]) - set(classrooms_serial_list)
+        for serial in classrooms_to_add:
+            ClassroomBloomer(bloomer=self, classroom=Classroom.objects.get(serial=serial)).save()
+        for serial in classrooms_to_delete:
+            ClassroomBloomer.objects.get(bloomer=self, classroom=Classroom.objects.get(serial=serial)).delete()
+
+
+    classrooms = property(_get_classrooms)
+    topics = property(_get_topics)
+
+class Classroom(models.Model):
+    serial = models.CharField(max_length=4, unique=True)
+
+    def _get_bloomers(self):
+        return [ cb.bloomer for cb in ClassroomBloomer.objects.filter(classroom=self) ]
+
+    def _get_topics(self):
+        return None
+
+    bloomers = property(_get_bloomers)
+    topics = property(_get_topics)
+
+class ClassroomBloomer(models.Model):
+    bloomer = models.ForeignKey('Bloomer', related_name="classroombloomer_bloomer")
+    classroom = models.ForeignKey('Classroom', related_name="classroombloomer_classroom")
 
 class Topic(models.Model):
     text = models.CharField(max_length=40)

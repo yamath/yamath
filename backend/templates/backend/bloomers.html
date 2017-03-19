@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<p>Bloomers:
+<ol>
+{% for bloomer in bloomers %}
+    <li>Bloomer <a href="{% url 'backend:bloomer_details' bloomer.user.username %}">{{ bloomer.user.username }}</a></li>
+{% endfor %}
+</ol>
+</p>
+
+{% endblock %}

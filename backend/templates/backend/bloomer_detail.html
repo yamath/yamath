@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Bloomer: {{ bloomer.user.username }}</h1>
+<p>Username: {{ bloomer.user.username }} {% if bloomer.professor %} is professor {% endif %}</p>
+<p>First_name: {{ bloomer.first_name }}</p>
+<p>Last_name: {{ bloomer.last_name }}</p>
+<p>Email: {{ bloomer.email }}</p>
+<p>Classrooms: {% for classroom in bloomer.classrooms %}<a href="{% url 'backend:classroom_details' classroom.serial %}">{{ classroom.serial }}</a>, {% endfor %}</p>
+<hr />
+<form method="post" action="{% url 'backend:bloomer_details' bloomer.user.username %}" autocomplete="off">
+{% csrf_token %}
+<table>
+<p>First_name: <input type="text" name="first_name" value="{{ bloomer.first_name }}" /></p>
+<p>Last_name: <input type="text" name="last_name" value="{{ bloomer.last_name }}" /></p>
+<p>Email: <input type="text" name="email" value="{{ bloomer.email }}" /></p>
+<p>Is professor: <input type="checkbox" name="professor" {% if bloomer.professor %}checked{% endif %} /></p>
+<ol>
+    {% for classroom in classrooms %}
+    <li>
+        <input type="checkbox" name="classroom_checkbox_{{ classroom.serial }}" {% if classroom in bloomer.classrooms %}checked{% endif %} /> {{ classroom.serial }}
+    </li>
+    {% endfor %}
+</ol>
+<input type="submit" value="salva" />
+</form>
+
+{% endblock %}

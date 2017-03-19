@@ -2,9 +2,9 @@
 
 {% block content %}
 
-<p>Possibili porte
-<ul>
-    <li><a href="{% url 'topics_info' %}">topics_info</a></li>
-</ul></p>
-
+<p>Porte aperte:</p>
+<ol>
+    <li><a href="{% url 'backend:bloomers' %}">bloomers</a></li>
+    <li><a href="{% url 'backend:classrooms' %}">classrooms</a></li>
+</ol>
 {% endblock %}
