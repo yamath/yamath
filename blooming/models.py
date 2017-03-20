@@ -21,7 +21,21 @@ class Bloomer(models.Model):
         return [ cb.classroom for cb in ClassroomBloomer.objects.filter(bloomer=self) ]
 
     def _get_topics(self):
-        return None
+        return [ topic for classroom in self.classrooms for topic in classroom.topics ]
+
+    def get_scorevalue_of(self, topic):
+        try:
+            return Score.objects.get(user=self.user, topic=topic).value
+        except:
+            return 0
+
+    def add_scorevalue_of(self, topic, i):
+        try:
+            score = Score.objects.get(user=self.user, topic=topic)
+        except:
+            score = Score(user=self.user, topic=topic, value=0)
+        score.value = min(100, max(0, score.value+i))
+        score.save()
 
     def update_classrooms(self, classrooms_serial_list):
         classrooms_to_add = set(classrooms_serial_list) - set([ c.serial for c in self.classrooms ])
@@ -75,15 +89,24 @@ class Topic(models.Model):
             try:
                 t = Topic.objects.get(pk=int(pk))
                 if t not in self.antes:
-                    TopicDependency(ante=t, post=
+                    TopicDependency(ante=t, post=self).save()
+            except:
+                pass
+        for t in self.antes:
+            if str(t.pk) not in antes_pk_list:
+                TopicDependency.objects.get(ante=t, post=self).delete()
 
     def update_posts(self, posts_pk_list):
-        posts_to_add = (set(posts_pk_list) - set([ str(p.pk) for p in self.posts ])) & set([ str(t.pk) for t in Topic.objects.all() ])
-        posts_to_delete = set([ str(p.pk) for p in self.posts ]) - set(posts_pk_list)
-        for pk in posts_to_add:
-            TopicDependency(ante=self, post=Topic.objects.get(pk=int(pk))).save()
-        for pk in posts_to_delete:
-            TopicDependency.objects.get(ante=self, post=Topic.objects.get(pk=int(pk))).delete()
+        for pk in posts_pk_list:
+            try:
+                t = Topic.objects.get(pk=int(pk))
+                if t not in self.posts:
+                    TopicDependency(ante=self, post=t).save()
+            except:
+                pass
+        for t in self.posts:
+            if str(t.pk) not in posts_pk_list:
+                TopicDependency.objects.get(ante=self, post=t).delete()
 
     def update_classrooms(self, classrooms_serial_list):
         classrooms_to_add = set(classrooms_serial_list) - set([ c.serial for c in self.classrooms ])
@@ -102,9 +125,13 @@ class Topic(models.Model):
     def _get_posts(self):
         return list({ td.post for td in TopicDependency.objects.filter(ante=self) })
 
+    def _get_questions(self)
+        return list(Question.objects.filter(topic=self))
+
     antes = property(_get_antes)
-    posts = property(_get_posts)
     classrooms = property(_get_classrooms)
+    posts = property(_get_posts)
+    questions = property(_get_questions)
 
 class TopicDependency(models.Model):
     ante = models.ForeignKey('Topic', related_name='topicdependency_ante')
@@ -137,10 +164,10 @@ class Question(models.Model):
                                                     ('delay', 'delayed'),
                                                     ('eval', 'evaluation')))
 
-    def __get_options(self):
+    def _get_options(self):
         return list(Option.objects.filter(question=self))
 
-    options = property(__get_options)
+    options = property(_get_options)
 
 class Score(models.Model):
     user = models.ForeignKey(User, related_name='score_user')

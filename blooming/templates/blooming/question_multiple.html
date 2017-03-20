@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<p>{{ question.text|safe }}</p>
+<form method="post" action="{% url 'question' topic.serial %}" autocomplete="off">
+{% csrf_token %}
+
+{% for option in question_options %}
+<p><input type="checkbox" name="O{{ option.pk }}" value="O{{ option.pk }}" id="O{{ option.pk }}"/><label for="O{{ option.pk }}"> {{ option.text }}</label></p>
+{% endfor %}
+
+<br />
+<input type="submit" value="invia" />
+<input type="hidden" name="topic_serial" value="{{ topic.serial }}" />
+</form>
+
+<p><em>{{ question.notes|safe }}</em></p>
+{% endblock %}

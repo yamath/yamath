@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<p>{{ question.text|safe }}</p>
+<form method="post" action="{% url 'question' topic.serial %}" autocomplete="off">
+{% csrf_token %}
+<table>
+<tr>
+    <td>Risposta:</td>
+    <td><input type="text" name="answer" /></td>
+</tr>
+</table>
+
+<input type="submit" value="invia" />
+<input type="hidden" name="topic_serial" value="{{ topic.serial }}" />
+</form>
+
+<p><em>{{ question.notes|safe }}</em></p>
+
+{% endblock %}

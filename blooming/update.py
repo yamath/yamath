@@ -8,6 +8,10 @@ blooming.ClassroomBloomer.objects.all().delete()
 blooming.Topic.objects.all().delete()
 blooming.TopicDependency.objects.all().delete()
 blooming.TopicClassroom.objects.all().delete()
+blooming.Option.objects.all().delete()
+blooming.Question.objects.all().delete()
+blooming.Score.objects.all().delete()
+blooming.Collection.objects.all().delete()
 
 for u in User.objects.all():
     blooming.Bloomer(user=u).save()
@@ -30,3 +34,11 @@ for tc in yapp.TopicClassroom.objects.all():
     blooming.TopicClassroom(topic=blooming.Topic.objects.get(text=tc.topic.description),
                             classroom=blooming.Classroom.objects.get(serial=tc.classroom.serial)).save()
 
+for q in yapp.QuestionOpen.objects.all():
+    bq = blooming.Question(text=q.text, topic=blooming.Topic.objects.get(text=q.topic.description), kind='popen')
+    bq.save()
+    for o in q.options.all():
+        blooming.Option(question=bq, text=o.text, status=('a' if o.status else 'r')).save()
+
+for s in yapp.Score.objects.all():
+    blooming.Score(user=s.user, topic=blooming.Topic.objects.get(text=s.topic.description), value=s.value).save()
