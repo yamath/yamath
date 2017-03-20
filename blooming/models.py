@@ -71,16 +71,15 @@ class Topic(models.Model):
     mobile = models.BooleanField(default=False)
 
     def update_antes(self, antes_pk_list):
-        antes_to_add = (set(antes_pk_list) - set([ str(a.pk) for a in self.antes ])) & set([ str(t.pk) for t in Topic.objects.all() ])
-        antes_to_delete = set([ str(a.pk) for a in self.antes ]) - set(antes_pk_list)
-        for pk in antes_to_add:
-            TopicDependency(ante=Topic.objects.get(pk=int(pk)), post=self).save()
-        for pk in antes_to_delete:
-            TopicDependency.objects.get(ante=Topic.objects.get(pk=int(pk)), post=self).delete()
+        for pk in antes_pk_list:
+            try:
+                t = Topic.objects.get(pk=int(pk))
+                if t not in self.antes:
+                    TopicDependency(ante=t, post=
 
     def update_posts(self, posts_pk_list):
         posts_to_add = (set(posts_pk_list) - set([ str(p.pk) for p in self.posts ])) & set([ str(t.pk) for t in Topic.objects.all() ])
-        posts_to_delete = set([ str(p.pk) for p in self.posts ]) - set(posts_pk_lis])
+        posts_to_delete = set([ str(p.pk) for p in self.posts ]) - set(posts_pk_list)
         for pk in posts_to_add:
             TopicDependency(ante=self, post=Topic.objects.get(pk=int(pk))).save()
         for pk in posts_to_delete:

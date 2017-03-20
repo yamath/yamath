@@ -51,7 +51,10 @@ def topic_details(request, pk):
         topic.update_posts([ key[15:] for key in request.POST.keys() if key[:15]=='posts_checkbox_' ] + [request.POST['new_post']])
         topic.update_classrooms([ key[19:] for key in request.POST.keys() if key[:19]=='classroom_checkbox_' ])
         topic.text = request.POST['text']
-        topic.bloom_index = request.POST['bloom_index']
+        try:
+            topic.bloom_index = int(request.POST['bloom_index'])
+        except:
+            topic.bloom_index = None
         topic.mobile = 'mobile' in request.POST
         topic.save()
         return render(request, 'backend/topic_details.html', {'topic':topic, 'classrooms':classrooms})
