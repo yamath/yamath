@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Option: {{ option.pk }}</h1>
+<p>Bloomers {{ option.user.username }} ha risposto a</p>
+<p>{{ option.question.text|safe }}</p>
+<p>con {{ option.text }}</p>
+<hr />
+<p>Secondo il database
+{% if other_accepted and not other_rejected %} il risultato è accetabile {% endif %}
+{% if not other_accepted and other_rejected %} il risultato è sbagliato {% endif %}
+{% if other_accepted and other_rejected %} il risultato è controverso (sovrascrivere?){% endif %}
+{% if not other_accepted and not other_rejected %} il risultato è inedito{% endif %}</p>
+<p>Le risposte considerate corrette sono: {{ correct_answers }}</p>
+<form method="post" action="{% url 'backend:pending_details' option.pk %}" autocomplete="off">
+{% csrf_token %}
+<p><input type="radio" name="status" value="a" />Accepted</p>
+<p><input type="radio" name="status" value="r" />Rejected</p>
+<p><input type="submit" value="salva" /></p>
+</form>
+
+{% endblock %}

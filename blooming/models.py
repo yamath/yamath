@@ -125,7 +125,7 @@ class Topic(models.Model):
     def _get_posts(self):
         return list({ td.post for td in TopicDependency.objects.filter(ante=self) })
 
-    def _get_questions(self)
+    def _get_questions(self):
         return list(Question.objects.filter(topic=self))
 
     antes = property(_get_antes)
@@ -166,6 +166,13 @@ class Question(models.Model):
 
     def _get_options(self):
         return list(Option.objects.filter(question=self))
+
+    def get_status(self, answer):
+        try:
+            status = Option.objects.filter(question=self, text=answer)[0].status
+        except:
+            status = 'p'
+        return status
 
     options = property(_get_options)
 

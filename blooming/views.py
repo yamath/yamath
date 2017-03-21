@@ -55,68 +55,20 @@ def question(request, topic_pk):
   if request.method=='GET':
     questions_list = topic.questions
     question = choice(questions_list)
-    request.session['question_pk'] = question.pk
-#    if isinstance(question, QuestionMultiple ):
-#        request.session['question_type'] = 'multiple'
-#        question_options = list(question.options.all())[:]
-#        shuffle(question_options)
-#        return render(request, 'question_multiple.html', {'question':question, 'question_options':question_options, 'topic':topic, 'session_user':request.user.username, 'session_topic':topic.serial, 'session_questionpk':question.pk, 'session_answer':''})
-#    elif isinstance(question, QuestionBoolean):
-#        request.session['question_type'] = 'boolean'
-#        return render(request, 'question_boolean.html', {'question':question, 'topic':topic, 'session_user':request.user.username, 'session_topic':topic.serial, 'session_questionpk':question.pk, 'session_answer':''})
-#    elif isinstance(question, QuestionOpen):
-#        request.session['question_type'] = 'open'
-#        return render(request, 'question.html', {'question':question, 'topic':topic, 'session_user':request.user.username, 'session_topic':topic.serial, 'session_questionpk':question.pk, 'session_answer':''})
-    return render(request, 'question.html', {'question':question, 'bloomer':bloomer})
+    bloomer.add_scorevalue_of(topic, -20)
+    return render(request, 'blooming/question.html', {'question':question, 'bloomer':bloomer})
   else:
-    try:
-      score = Score.objects.get(user=request.user, topic=topic)
-    except Score.DoesNotExist:
-      score = Score(user=request.user, topic=topic, value=0)
-    scorevalue = bloomer.get_scorevalue_of(topic)
-    if request.session['question_type']=='multiple':
-        question = QuestionMultiple.objects.get(pk=request.session['question_pk'])
-        options = question.options.all()
-        correct = True
-        #raise ValueError(request.POST)
-        for o in options:
-            o_label = 'O' + str(o.pk)
-            if (o_label in request.POST) != o.status:
-                correct = False
-        if correct:
-            score.value = min(100, score.value+10)
-            messages.add_message(request, messages.SUCCESS, 'Risposta esatta!')
-        else:
-            score.value = max(0, score.value-20)
-            messages.add_message(request, messages.ERROR, 'Risposta sbagliata.')
-    elif request.session['question_type']=='boolean':
-        question = QuestionBoolean.objects.get(pk=request.session['question_pk'])
-        if ('OTrue' in request.POST) == question.status:
-            score.value = min(100, score.value+10)
-            messages.add_message(request, messages.SUCCESS, 'Risposta esatta!')
-        else:
-            score.value = max(0, score.value-20)
-            messages.add_message(request, messages.ERROR, 'Risposta sbagliata.')
-    elif request.session['question_type']=='open':
-        question = QuestionOpen.objects.get(pk=request.session['question_pk'])
-        options = question.options.all()
-        try:
-          if options.get(text=request.POST['answer']).status:
-            score.value = min(100, score.value+10)
-            messages.add_message(request, messages.SUCCESS, 'Risposta esatta!')
-          else:
-            raise ValueError
-        except:
-          score.value = max(0, score.value-20)
-          messages.add_message(request, messages.ERROR, 'Risposta sbagliata.')
-    score.save()
-    qpk = request.session['question_pk']
-    del request.session['question_pk']
-    request.session['session_user'] = request.user.username
-    request.session['session_topic'] = topic.serial
-    request.session['session_questionpk'] = qpk
-    request.session['session_answer'] = request.POST.get('answer', '')
-    return redirect('index')
+    return redirect('blooming:submit')
+
+@never_cache
+@login_required
+def submit(request):
+    bloomer = Bloomer.objects.get(user=request.user)
+    question = Question.objects.get(pk=int(request.POST['question_pk']))
+    option = Option(user=bloomer.user, question=question, text=request.POST['answer'], status=question.get_status(request.POST['answer']))
+    option.save()
+    bloomer.add_scorevalue_of(question.topic, 0 if option.status == 'r' else +30)
+    return render(request, 'blooming/submit.html', {'question':question, 'option':option})
 
 def claim(request):
     Claim(username=request.POST['session_user'], questionpk=request.POST['session_questionpk'], topic=request.POST['session_topic'], answer=request.POST['session_answer']).save()

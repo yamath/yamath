@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<p>Pendings:
+<ol>
+{% for option in pendings %}
+    <li>Option <a href="{% url 'backend:pending_details' option.pk %}">{{ option.user.username }}:{{ option.question.pk }}</a></li>
+{% endfor %}
+</ol>
+</p>
+
+{% endblock %}

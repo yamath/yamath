@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'yapp.apps.YappConfig',
+    #'yapp.apps.YappConfig',
     'backend.apps.BackendConfig',
     'blooming.apps.BloomingConfig',
 ]
@@ -57,7 +57,7 @@ ROOT_URLCONF = 'yamath.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['yamath/yamath/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,5 +122,5 @@ STATIC_URL = '/static/'
 
 
 # Personal settings
-LOGIN_REDIRECT_URL = '/yapp/'
-LOGOUT_REDIRECT_URL = '/yapp/'
+LOGIN_REDIRECT_URL = '/blooming/'
+LOGOUT_REDIRECT_URL = '/blooming/'
