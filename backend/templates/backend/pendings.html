@@ -2,12 +2,20 @@
 
 {% block content %}
 
-<p>Pendings:
-<ol>
+<h1>Pendings</h1>
+
 {% for option in pendings %}
-    <li>Option <a href="{% url 'backend:pending_details' option.pk %}">{{ option.user.username }}:{{ option.question.pk }}</a></li>
+<p>Bloomer: {{ option.bloomer.user.username }}</p>
+<p>Question {{ option.question.pk }}:<br />
+<quote>{{ option.question.text|safe }}</quote></p>
+<p>Option {{ .option.pk }} {{ option.status }}: {{ option.text }} (correct is {{ option.question.get_correct.text }})</p>
+<form method="post" action="{% url 'backend:pending_solved' option.pk %}" autocomplete="off">
+{% csrf_token %}
+<input type="submit" name="option_accepted" value="Accepted" />
+<input type="submit" name="option_rejected" value="Rejected" />
+</form>
+<hr />
 {% endfor %}
-</ol>
-</p>
+
 
 {% endblock %}

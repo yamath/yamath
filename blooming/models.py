@@ -167,6 +167,12 @@ class Question(models.Model):
     def _get_options(self):
         return list(Option.objects.filter(question=self))
 
+    def get_correct(self):
+        try:
+            return Option.objects.filter(question=self, status='a')[0]
+        except:
+            return None
+
     def get_status(self, answer):
         try:
             status = Option.objects.filter(question=self, text=answer)[0].status

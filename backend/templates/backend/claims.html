@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Claims</h1>
+
+{% for claim in claims %}
+<p>Bloomer {{ claim.bloomer.user.username }}</p>
+<p>Topic {{ claim.topic.pk }}: {{ claim.topic.text }}</p>
+<p>Question {{ claim.question.pk }}<br />
+<quote>{{ claim.question.text|safe }}</quote></p>
+<p>Option {{ claim.option.pk }} {{ claim.option.status }}: {{ claim.option.text }} (correct is {{ claim.question.get_correct.text }})</p>
+<form method="post" action="{% url 'backend:claim_solved' claim.pk %}" autocomplete="off">
+{% csrf_token %}
+<input type="submit" value="solved" />
+</form>
+<hr />
+{% endfor %}
+
+
+
+{% endblock %}

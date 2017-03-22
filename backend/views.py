@@ -1,17 +1,23 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test
+from django.views.decorators.cache import never_cache
 import blooming.models as blooming
 import backend.models as backend
 from django.contrib import messages
 
+@never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def index(request):
     return render(request, 'backend/index.html')
 
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
 def bloomers(request):
     return render(request, 'backend/bloomers.html', {'bloomers':blooming.Bloomer.objects.all()})
 
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
 def bloomer_details(request, username):
     bloomer = blooming.Bloomer.objects.get(user=User.objects.get(username=username))
     classrooms = blooming.Classroom.objects.all()
@@ -47,9 +53,24 @@ def claim(request):
     messages.info(request, "Grazie per il contributo.")
     return redirect('blooming:index')
 
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def claim_solved(request, claim_pk):
+    backend.Claim.objects.get(pk=claim_pk).delete()
+    return redirect('backend:claims')
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def claims(request):
+    return render(request, 'backend/claims.html', {'claims':backend.Claim.objects.all()})
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
 def classrooms(request):
     return render(request, 'backend/classrooms.html', {'classrooms':blooming.Classroom.objects.all()})
 
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
 def classroom_details(request, serial):
     classroom = blooming.Classroom.objects.get(serial=serial)
     if request.method == 'GET':
@@ -60,9 +81,13 @@ def classroom_details(request, serial):
         classroom.save()
         return render(request, 'backend/classroom_details.html', {'classroom':classroom})
 
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
 def pendings(request):
     return render(request, 'backend/pendings.html', {'pendings':blooming.Option.objects.filter(status='p')})
 
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
 def pending_details(request, option_pk):
     option = blooming.Option.objects.get(pk=option_pk)
     other_options = blooming.Option.objects.filter(question=option.question, text=option.text)
@@ -78,11 +103,26 @@ def pending_details(request, option_pk):
             o.save()
         return render(request, 'backend/pending_details.html', {'option':option, 'correct_answers':correct_answers, 'other_accepted':other_accepted, 'other_rejected':other_rejected})
 
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def pending_solved(request, option_pk):
+    option = blooming.Option.objects.get(pk=option_pk)
+    if 'option_accepted' in request.POST:
+        option.status = 'a'
+    elif 'option_rejected' in request.POST:
+        option.status = 'r'
+    else:
+        raise ValueError
+    option.save()
+    return redirect('backend:pendings')
 
-
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
 def topics(request):
     return render(request, 'backend/topics.html', {'topics':blooming.Topic.objects.all()})
 
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
 def topic_details(request, pk):
     topic = blooming.Topic.objects.get(pk=pk)
     classrooms = blooming.Classroom.objects.all()
