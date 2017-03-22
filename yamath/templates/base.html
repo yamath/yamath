@@ -56,10 +56,10 @@
                         <form class="navbar-form form-inline" method="post" action="{% url 'backend:claim' %}" autocomplete="off">
                         {% csrf_token %}
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Qualcosa non va</button>
-                        <input type="hidden" name="session_user" value="{{ session_user }}" />
-                        <input type="hidden" name="session_topic" value="{{ session_topic }}" />
-                        <input type="hidden" name="session_answer" value="{{ session_answer }}" />
-                        <input type="hidden" name="session_questionpk" value="{{ session_questionpk }}" />
+                        <input type="hidden" name="claim_bloomer_pk" value="{{ bloomer.pk }}" />
+                        <input type="hidden" name="claim_topic_pk" value="{{ topic.pk }}" />
+                        <input type="hidden" name="claim_question_pk" value="{{ question.pk }}" />
+                        <input type="hidden" name="claim_option_pk" value="{{ option.pk }}" />
                         </form>
                     </li>
                     <li>

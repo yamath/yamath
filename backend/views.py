@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test
 import blooming.models as blooming
+import backend.models as backend
+from django.contrib import messages
 
 @user_passes_test(lambda u: u.is_superuser)
 def index(request):
@@ -25,7 +27,25 @@ def bloomer_details(request, username):
         return render(request, 'backend/bloomer_details.html', {'bloomer':bloomer, 'classrooms':classrooms})
 
 def claim(request):
-    return redirect('index')
+    try:
+        bloomer = blooming.Bloomer.objects.get(pk=request.POST['claim_bloomer_pk'])
+    except:
+        bloomer = None
+    try:
+        topic = blooming.Topic.objects.get(pk=request.POST['claim_topic_pk'])
+    except:
+        topic = None
+    try:
+        question = blooming.Question.objects.get(pk=request.POST['claim_question_pk'])
+    except:
+        question = None
+    try:
+        option = blooming.Option.objects.get(pk=request.POST['claim_option_pk'])
+    except:
+        option = None
+    backend.Claim(bloomer=bloomer, topic=topic, question=question, option=option).save()
+    messages.info(request, "Grazie per il contributo.")
+    return redirect('blooming:index')
 
 def classrooms(request):
     return render(request, 'backend/classrooms.html', {'classrooms':blooming.Classroom.objects.all()})
