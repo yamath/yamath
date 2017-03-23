@@ -169,14 +169,26 @@ class Question(models.Model):
 
     def get_correct(self):
         try:
-            return Option.objects.filter(question=self, status='a')[0]
+            return Option.objects.filter(question=self, status='a').first()
         except:
             return None
 
     def get_status(self, answer):
-        try:
-            status = Option.objects.filter(question=self, text=answer)[0].status
-        except:
+        equivalent_options = Option.objects.filter(question=self, text=answer)
+        if len(equivalent_options)>0:
+            if all( option.status == 'a' for option in equivalent_options ):
+                status = 'a'
+            elif all( option.status == 'r' for option in equivalent_options ):
+                status = 'r'
+            else:
+                status = 'p'
+        elif self.kind in ['ibool', 'imulti', 'iopen', 'pbool', 'pmulti', 'popen']:
+            accepted_options = Option.objects.filter(question=self, status='a')
+            if answer in [ option.text for option in accepted_options ]:
+                status = 'a'
+            else:
+                status = 'r'
+        else:
             status = 'p'
         return status
 

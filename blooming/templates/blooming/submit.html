@@ -11,7 +11,7 @@
 <p>
     {% if option.status == 'a' %}corretta!{% endif %}
     {% if option.status == 'p' %}sospesa.<br /> Significa che ti sono stati assegnati i punti come fosse corretta, però il tuo insegnante controllerà la risposta e deciderà se la risposta è corretta o sbagliata{% endif %}
-    {% if option.status == 'r' %}sbagliata.<br /> Una risposta corretta (possibilmente l'unica risposta corretta) sarebbe stata: {{ question.correct_answer }}.{% endif %}
+    {% if option.status == 'r' %}sbagliata.<br /> Una risposta corretta (possibilmente l'unica risposta corretta) sarebbe stata: {{ question.get_correct.text }}.{% endif %}
 </p>
 <hr />
 <p><a href="{% url 'blooming:question' question.topic.pk %}">Rispondi sullo stesso tema</a></p>
