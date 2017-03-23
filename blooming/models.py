@@ -58,13 +58,28 @@ class Classroom(models.Model):
     def _get_topics(self):
         return list({ tc.topic for tc in TopicClassroom.objects.filter(classroom=self) })
 
-    def update_bloomers(self, bloomers_username_list):
-        bloomers_to_add = (set(bloomers_username_list) - set([ b.user.username for b in self.bloomers ])) & set([ b.user.username for b in Bloomer.objects.all() ])
-        bloomers_to_delete = set([ b.user.username for b in self.bloomers ]) - set(bloomers_username_list)
-        for username in bloomers_to_add:
-            ClassroomBloomer(bloomer=Bloomer.objects.get(user=User.objects.get(username=username)), classroom=self).save()
-        for username in bloomers_to_delete:
-            ClassroomBloomer.objects.get(bloomer=Bloomer.objects.get(user=User.objects.get(username=username)), classroom=self).delete()
+    def add_bloomer(self, bloomer):
+        if bloomer not in self.bloomers:
+            ClassroomBloomer(bloomer=bloomer, classroom=self).save()
+
+    def delete_bloomer(self, bloomer):
+        if bloomer in self.bloomers:
+            ClassroomBloomer.objects.get(bloomer=bloomer, classroom=self).delete()
+
+    def add_topic(self, topic):
+        if topic not in self.topics:
+            TopicClassroom(topic=topic, classroom=self).save()
+
+    def delete_topic(self, topic):
+        if topic in self.topics:
+            TopicClassroom.objects.get(topic=topic, classroom=self).delete()
+    #def update_bloomers(self, bloomers_username_list):
+    #    bloomers_to_add = (set(bloomers_username_list) - set([ b.user.username for b in self.bloomers ])) & set([ b.user.username for b in Bloomer.objects.all() ])
+    #    bloomers_to_delete = set([ b.user.username for b in self.bloomers ]) - set(bloomers_username_list)
+    #    for username in bloomers_to_add:
+    #        ClassroomBloomer(bloomer=Bloomer.objects.get(user=User.objects.get(username=username)), classroom=self).save()
+    #    for username in bloomers_to_delete:
+    #        ClassroomBloomer.objects.get(bloomer=Bloomer.objects.get(user=User.objects.get(username=username)), classroom=self).delete()
 
     bloomers = property(_get_bloomers)
     topics = property(_get_topics)

@@ -2,32 +2,58 @@
 
 {% block content %}
 
-<h1>Classroom: {{ classroom.serial }}</h1>
-<p>Bloomers in this classroom:
-<ol>
-    {% for bloomer in classroom.bloomers %}
-    <li><a href="{% url 'backend:bloomer_details' bloomer.user.username %}">{{ bloomer.user.username }}</a></li>
-    {% endfor %}
-</ol></p>
-<p>Topics for this classroom:
-<ol>
-    {% for topic in classroom.topics %}
-    <li><a href="{% url 'backend:topic_details' topic.pk %}">{{ topic.pk }}</a></li>
-    {% endfor %}
-</ol></p>
-<hr />
+
 <form method="post" action="{% url 'backend:classroom_details' classroom.serial %}" autocomplete="off">
 {% csrf_token %}
-<p>Serial: <input type="text" name="serial" value="{{ classroom.serial }}" /></p>
-<p>Bloomers: add one <input type="text" name="new_bloomer" />
-<ol>
-    {% for bloomer in classroom.bloomers %}
-    <li>
-        <input type="checkbox" name="bloomer_checkbox_{{ bloomer.user.username }}" checked/> {{ bloomer.user.username }}
-    </li>
-    {% endfor %}
-</ol></p>
-<input type="submit" value="salva" />
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>Classroom: {{ classroom.serial }}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <h4>Serial</h4>
+        </div>
+        <div class="col-xs-8">
+            <input type="text" name="serial" value="{{ classroom.serial }}" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <h4>Topic <a data-toggle="collapse" href="#topic_list">expand</a></h4>
+        </div>
+        <div class="col-xs-8 collapse in" id="topic_list">
+            <ol>
+                {% for topic in classroom.topics %}
+                <li>Topic <a href="{% url 'backend:topic_details' topic.pk %}">{{ topic.pk }}</a>: {{ topic.text }}</li>
+                {% endfor %}
+                <li>Add one <input type="text" name="add_topic" /></li>
+                <li>Delete one <input type="text" name="delete_topic" /></li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <h4>Bloomer <a data-toggle="collapse" href="#bloomer_list">expand</a></h4>
+        </div>
+        <div class="col-xs-8 collapse" id="bloomer_list">
+            <ol>
+                {% for bloomer in classroom.bloomers %}
+                <li>Bloomer <a href="{% url 'backend:bloomer_details' bloomer.user.username %}">{{ bloomer.user.username }}</a></li>
+                {% endfor %}
+                <li>Add one <input type="text" name="add_bloomer" /></li>
+                <li>Delete one <input type="text" name="delete_bloomer" /></li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <input type="submit" value="salva" />
+        </div>
+    </div>
+</div>
+
 </form>
 
 {% endblock %}

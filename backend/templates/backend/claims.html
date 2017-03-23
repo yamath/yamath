@@ -6,10 +6,22 @@
 
 {% for claim in claims %}
 <p>Bloomer <a href="{% url 'backend:bloomer_details' claim.bloomer.user.username %}">{{ claim.bloomer.user.username }}</a></p>
-<p>Topic <a href="{% url 'backend:topic_details' claim.topic.pk %}">{{ claim.topic.pk }}</a>: {{ claim.topic.text }}</p>
-<p>Question <a href="{% url 'backend:question_details' claim.question.pk %}">{{ claim.question.pk }}</a><br />
-<quote>{{ claim.question.text|safe }}</quote></p>
-<p>Option {{ claim.option.pk }} {{ claim.option.status }}: {{ claim.option.text }} (correct is {{ claim.question.get_correct.text }})</p>
+{% if claim.topic %}
+    <p>Topic <a href="{% url 'backend:topic_details' claim.topic.pk %}">{{ claim.topic.pk }}</a>: {{ claim.topic.text }}</p>
+{% else %}
+    <p>No topic</p>
+{% endif %}
+{% if claim.question %}
+    <p>Question <a href="{% url 'backend:question_details' claim.question.pk %}">{{ claim.question.pk }}</a><br />
+    <quote>{{ claim.question.text|safe }}</quote></p>
+{% else %}
+    <p>No question</p>
+{% endif %}
+{% if claim.option %}
+    <p>Option {{ claim.option.pk }} {{ claim.option.status }}: {{ claim.option.text }} (correct is {{ claim.question.get_correct.text }})</p>
+{% else %}
+    <p>No option</p>
+{% endif %}
 <form method="post" action="{% url 'backend:claim_solved' claim.pk %}" autocomplete="off">
 {% csrf_token %}
 <input type="submit" value="solved" />

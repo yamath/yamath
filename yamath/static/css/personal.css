@@ -20,3 +20,12 @@
 .topic_far {
   color: gray;
 }
+
+form .container .row .col-xs-8 {
+    border-bottom: 1px solid #8cf;
+    padding-bottom: 4px;
+}
+
+form .container .row .col-xs-8 input[type="text"] {
+    width: 70%;
+}

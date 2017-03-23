@@ -9,7 +9,12 @@ from django.contrib import messages
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def index(request):
-    return render(request, 'backend/index.html')
+    bloomers = blooming.Bloomer.objects.all()
+    classrooms = blooming.Classroom.objects.all()
+    topics = blooming.Topic.objects.all()
+    claims = backend.Claim.objects.all()
+    pendings = blooming.Option.objects.filter(status='p')
+    return render(request, 'backend/index.html', {'bloomers':bloomers, 'classrooms':classrooms, 'topics':topics, 'claims':claims, 'pendings':pendings})
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
@@ -76,8 +81,16 @@ def classroom_details(request, serial):
     if request.method == 'GET':
         return render(request, 'backend/classroom_details.html', {'classroom':classroom})
     elif request.method == 'POST':
-        classroom.update_bloomers([ key[17:] for key in request.POST.keys() if key[:17]=='bloomer_checkbox_' ] + [request.POST['new_bloomer']])
+        #classroom.update_bloomers([ key[17:] for key in request.POST.keys() if key[:17]=='bloomer_checkbox_' ] + [request.POST['new_bloomer']])
         classroom.serial = request.POST['serial']
+        if request.POST['add_topic']:
+            classroom.add_topic(blooming.Topic.objects.get(pk=int(request.POST['add_topic'])))
+        if request.POST['add_bloomer']:
+            classroom.add_bloomer(blooming.Bloomer.objects.get(user=User.objects.get(request.POST['add_bloomer'])))
+        if request.POST['delete_topic']:
+            classroom.delete_topic(blooming.Topic.objects.get(pk=int(request.POST['delete_topic'])))
+        if request.POST['delete_bloomer']:
+            classroom.delete_bloomer(blooming.Bloomer.objects.get(user=User.objects.get(request.POST['delete_bloomer'])))
         classroom.save()
         return render(request, 'backend/classroom_details.html', {'classroom':classroom})
 
@@ -119,6 +132,8 @@ def pending_solved(request, option_pk):
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def question_details(request, question_pk):
+    if question_pk==None:
+        question_pk = request.GET['question_pk']
     question = blooming.Question.objects.get(pk=question_pk)
     if request.method == 'GET':
         return render(request, 'backend/question_details.html', {'question':question})
@@ -151,8 +166,9 @@ def topics(request):
 def topic_details(request, pk):
     topic = blooming.Topic.objects.get(pk=pk)
     classrooms = blooming.Classroom.objects.all()
+    questions = blooming.Question.objects.filter(topic=topic)
     if request.method == 'GET':
-        return render(request, 'backend/topic_details.html', {'topic':topic, 'classrooms':classrooms})
+        return render(request, 'backend/topic_details.html', {'topic':topic, 'classrooms':classrooms, 'questions':questions})
     elif request.method == 'POST':
         topic.update_antes([ key[15:] for key in request.POST.keys() if key[:15]=='antes_checkbox_' ] + [request.POST['new_ante']])
         topic.update_posts([ key[15:] for key in request.POST.keys() if key[:15]=='posts_checkbox_' ] + [request.POST['new_post']])
@@ -164,4 +180,4 @@ def topic_details(request, pk):
             topic.bloom_index = None
         topic.mobile = 'mobile' in request.POST
         topic.save()
-        return render(request, 'backend/topic_details.html', {'topic':topic, 'classrooms':classrooms})
+        return render(request, 'backend/topic_details.html', {'topic':topic, 'classrooms':classrooms, 'questions':questions})

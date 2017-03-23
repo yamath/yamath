@@ -2,12 +2,81 @@
 
 {% block content %}
 
-<p>Porte aperte:</p>
-<ol>
-    <li><a href="{% url 'backend:bloomers' %}">bloomers</a></li>
-    <li><a href="{% url 'backend:classrooms' %}">classrooms</a></li>
-    <li><a href="{% url 'backend:topics' %}">topics</a></li>
-    <li><a href="{% url 'backend:claims' %}">claims</a></li>
-    <li><a href="{% url 'backend:pendings' %}">pendings</a></li>
-</ol>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>Porte aperte</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <h4><a href="{% url 'backend:bloomers' %}">Bloomers</a> <a data-toggle="collapse" href="#bloomers">expand</a></h4>
+        </div>
+        <div class="col-xs-8 collapse" id="bloomers">
+            {% for bloomer in bloomers %}
+            <p>Bloomer <a href="{% url 'backend:bloomer_details' bloomer.user.username %}">{{ bloomer.user.username }}</a></p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <h4><a href="{% url 'backend:classrooms' %}">Classrooms</a> <a data-toggle="collapse" href="#classrooms">expand</a></h4>
+        </div>
+        <div class="col-xs-8 collapse" id="classrooms">
+            {% for classroom in classrooms %}
+            <p>Classroom <a href="{% url 'backend:classroom_details' classroom.serial %}">{{ classroom.serial }}</a></p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <h4><a href="{% url 'backend:topics' %}">Topics</a> <a data-toggle="collapse" href="#topics">expand</a></h4>
+        </div>
+        <div class="col-xs-8 collapse" id="topics">
+            {% for topic in topics %}
+            <p>Topic <a href="{% url 'backend:topic_details' topic.pk %}">{{ topic.pk }}</a>: {{ topic.text }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <h4><a href="#">Questions</a> <a data-toggle="collapse" href="#questions">expand</a></h4>
+        </div>
+        <div class="col-xs-8 collapse in" id="questions">
+            <p>
+                <form method="get" action="{% url 'backend:question_details' None %}" autocomplete="off">
+                {% csrf_token %}
+                Visit question
+                <input type="text" name="question_pk" />
+                <input type="submit" value="go" />
+                </form>
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <h4><a href="{% url 'backend:claims' %}">Claims</a> <a data-toggle="collapse" href="#claims">expand</a></h4>
+        </div>
+        <div class="col-xs-8 collapse in" id="claims">
+            {% if claims %}
+            <p><a href="{% url 'backend:claims' %}">There are claims</a></p>
+            {% else %}
+            <p>There are no claims</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <h4><a href="{% url 'backend:pendings' %}">Pendings</a> <a data-toggle="collapse" href="#pendings">expand</a></h4>
+        </div>
+        <div class="col-xs-8 collapse in" id="pendings">
+            {% if pendings %}
+            <p><a href="{% url 'backend:pendings' %}">There are pendings</a></p>
+            {% else %}
+            <p>There are no pendings</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
 {% endblock %}
