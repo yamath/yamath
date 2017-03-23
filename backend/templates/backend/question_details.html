@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <form method="post" action="{% url 'backend:question_details' question.pk %}" autocomplete="off">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-xs-12 header text-left"><h1>Question {{ question.pk }}</h1></div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <h4>Topic {{ question.topic.pk }}</h4>
+            <p>{{ question.topic.text }}</p>
+        </div>
+        <div class="col-xs-8">
+            <input type="text" name="topic_pk" value="{{ question.topic.pk }}" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <h4>Text</h4>
+            <p>{{ question.text|safe }}</p>
+        </div>
+        <div class="col-xs-8">
+            <textarea style="width:100%;" name="question_text">{{ question.text }}</textarea>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <h4>Kind</h4>
+        </div>
+        <div class="col-xs-8">
+            <input type="text" name="question_kind" value="{{ question.kind }}" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <h4>Options</h4>
+        </div>
+        <div class="col-xs-8">
+            {% for option in question.distinct_nonpending_options %}
+            <input type="checkbox" name="option_accepted{{ option.pk }}" {% if option.status == 'a' %}checked{% endif %} />
+            <input type="text" name="option_text{{ option.pk }}" value="{{ option.text }}" /><br />
+            {% endfor %}
+            <input type="checkbox" name="new_option_accepted" />
+            <input type="text" name="new_option_text" value="" /><br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <h4>Note</h4>
+            <p>{{ question.notes|safe }}</p>
+        </div>
+        <div class="col-xs-8">
+            <textarea style="width:100%;" name="question_notes">{{ question.notes }}</textarea>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <input type="submit" value="salva" style="width:100%;">
+        </div>
+    </div>
+    </form>
+</div>
+<!--
+<p>Topic</p>
+<p>Text: {{ topic.text }} </p>
+<p>Bloom: {{ topic.bloom_index }} {% if topic.mobile %}mobile{% endif %}</p>
+<p>Antes: {% for ante in topic.antes %}<a href="{% url 'backend:topic_details' ante.pk %}">{{ ante.pk }}</a>, {% endfor %}</p>
+<p>Posts: {% for post in topic.posts %}<a href="{% url 'backend:topic_details' post.pk %}">{{ post.pk }}</a>, {% endfor %}</p>
+<p>Classrooms: {% for classroom in topic.classrooms %}<a href="{% url 'backend:classroom_details' classroom.serial %}">{{ classroom.serial }}</a>, {% endfor %}</p>
+<hr />
+<form method="post" action="% url 'backend:topic_details' topic.pk %}" autocomplete="off">
+{% csrf_token %}
+<p>Text: <input type="text" name="text" value="{{ topic.text }}" /></p><hr />
+<p>Bloom: <input type="text" name="bloom_index" value="{{ topic.bloom_index }}" /> mobile <input type="checkbox" name="mobile" {% if topic.mobile %}checked{% endif %}</p><hr />
+<p>Antes: add one<input type="text" name="new_ante" value="" />
+<ol>
+    {% for ante in topic.antes %}
+    <li>
+        <input type="checkbox" name="antes_checkbox_{{ ante.pk }}" checked/> {{ ante.pk }}
+    </li>
+    {% endfor %}
+</ol></p><hr />
+<p>Posts: add one<input type="text" name="new_post"/>
+<ol>
+    {% for post in topic.posts %}
+    <li>
+        <input type="checkbox" name="posts_checkbox_{{ post.pk }}" checked/> {{ post.pk }}
+    </li>
+    {% endfor %}
+</ol></p><hr />
+<p>Classrooms:<ol>
+    {% for classroom in classrooms %}
+    <li>
+        <input type="checkbox" name="classroom_checkbox_{{ classroom.serial }}" {% if classroom in topic.classrooms %}checked{% endif %} /> {{ classroom.serial }}
+    </li>
+    {% endfor %}
+</ol></p>
+<input type="submit" value="salva" />
+</form>
+-->
+{% endblock %}

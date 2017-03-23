@@ -167,6 +167,9 @@ class Question(models.Model):
     def _get_options(self):
         return list(Option.objects.filter(question=self))
 
+    def distinct_nonpending_options(self):
+        return [ Option.objects.filter(question=self, text=text).first() for text in { option.text for option in Option.objects.filter(question=self) if option.status != 'p' } ]
+
     def get_correct(self):
         try:
             return Option.objects.filter(question=self, status='a').first()

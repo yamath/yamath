@@ -118,6 +118,31 @@ def pending_solved(request, option_pk):
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
+def question_details(request, question_pk):
+    question = blooming.Question.objects.get(pk=question_pk)
+    if request.method == 'GET':
+        return render(request, 'backend/question_details.html', {'question':question})
+    elif request.method == 'POST':
+        question.topic = blooming.Topic.objects.get(pk=request.POST['topic_pk'])
+        question.text = request.POST['question_text']
+        question.kind = request.POST['question_kind']
+        for (key, value) in request.POST.items():
+            if key[:11]=='option_text':
+                option = blooming.Option.objects.get(pk=int(key[11:]))
+                if value=='':
+                    option.delete()
+                else:
+                    option.text = value
+                    option.status = 'a' if ('option_accepted'+key[11:] in request.POST) else 'r'
+                    option.save()
+        if request.POST['new_option_text'] != '':
+            new_option = blooming.Option(question=question, user=request.user, text=request.POST['new_option_text'], status=('a' if ('new_option_accepted' in request.POST) else 'r'))
+            new_option.save()
+        question.save()
+        return render(request, 'backend/question_details.html', {'question':question})
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
 def topics(request):
     return render(request, 'backend/topics.html', {'topics':blooming.Topic.objects.all()})
 
