@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from random import shuffle
 
 #def validate_user_is_professor(user):
 #    try:
@@ -16,6 +17,9 @@ class Bloomer(models.Model):
     last_name = models.CharField(max_length=40, blank=True, null=True)
     email = models.CharField(max_length=40, blank=True, null=True)
     professor = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username
 
     def _get_classrooms(self):
         return [ cb.classroom for cb in ClassroomBloomer.objects.filter(bloomer=self) ]
@@ -51,6 +55,9 @@ class Bloomer(models.Model):
 
 class Classroom(models.Model):
     serial = models.CharField(max_length=4, unique=True)
+
+    def __str__(self):
+        return self.serial
 
     def _get_bloomers(self):
         return [ cb.bloomer for cb in ClassroomBloomer.objects.filter(classroom=self) ]
@@ -88,6 +95,9 @@ class ClassroomBloomer(models.Model):
     bloomer = models.ForeignKey('Bloomer', related_name="classroombloomer_bloomer")
     classroom = models.ForeignKey('Classroom', related_name="classroombloomer_classroom")
 
+    def __str__(self):
+        return "%s in %s" % (self.bloomer, self.classroom)
+
 class Topic(models.Model):
     text = models.CharField(max_length=80)
     bloom_index = models.IntegerField(  blank=True, null=True,
@@ -98,6 +108,9 @@ class Topic(models.Model):
                                                     (5, 'evaluating'),
                                                     (6, 'creating'), ))
     mobile = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.text
 
     def update_antes(self, antes_pk_list):
         for pk in antes_pk_list:
@@ -152,9 +165,15 @@ class TopicDependency(models.Model):
     ante = models.ForeignKey('Topic', related_name='topicdependency_ante')
     post = models.ForeignKey('Topic', related_name='topicdependency_post')
 
+    def __str__(self):
+        return "%s BEFORE %s" % (self.ante, self.post)
+
 class TopicClassroom(models.Model):
     topic = models.ForeignKey('Topic', related_name='topicclassroom_topic')
     classroom = models.ForeignKey('Classroom', related_name='topicclassroom_classroom')
+
+    def __str__(self):
+        return "%s FOR %s" % (self.topic, self.classroom)
 
 class Option(models.Model):
     user = models.ForeignKey(User, blank=True, null=True)
@@ -165,6 +184,9 @@ class Option(models.Model):
                                                         ('r', 'rejected') ))
     submit_time = models.DateTimeField(auto_now_add=True)
     interval = models.DurationField(blank=True, null=True)
+
+    def __str__(self):
+        return "%s %s: %s TO %s (%s)" % (self.user.username, self.submit_time, self.text, self.question.pk, self.status)
 
 class Question(models.Model):
     text = models.TextField()
@@ -178,6 +200,9 @@ class Question(models.Model):
                                                     ('popen', 'paperwork open'),
                                                     ('delay', 'delayed'),
                                                     ('eval', 'evaluation')))
+
+    def __str__(self):
+        return "(T%s %s %s) %s" % (self.topic.pk, self.kind, self.pk, self.text[:80])
 
     def _get_options(self):
         return list(Option.objects.filter(question=self))
@@ -209,6 +234,11 @@ class Question(models.Model):
         else:
             status = 'p'
         return status
+
+    def shuffled_options(self):
+        l = self.distinct_nonpending_options()
+        shuffle(l)
+        return l
 
     options = property(_get_options)
 

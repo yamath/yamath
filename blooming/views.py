@@ -43,7 +43,17 @@ def question(request, topic_pk):
 def submit(request):
     bloomer = Bloomer.objects.get(user=request.user)
     question = Question.objects.get(pk=int(request.POST['question_pk']))
-    option = Option(user=bloomer.user, question=question, text=request.POST['answer'], status=question.get_status(request.POST['answer']))
+    if question.kind in ['ibool', 'pbool']:
+        try:
+            status = Option.objects.filter(questio=question, text=request.POST['answer']).first().status
+        except:
+            status = 'r'
+        option = Option(user=bloomer.user, question=question, text=request.POST['answer'], status=status)
+    elif question.kind in ['imulti', 'pmulti']:
+        pk = [ key[7:] for (key, value) in request.POST.items() if key[:7]=='option_' ][0]
+        option = Option(user=bloomer.user, question=question, text=Option.objects.get(pk=pk).text, status=Option.objects.get(pk=pk).status)
+    else:
+        option = Option(user=bloomer.user, question=question, text=request.POST['answer'], status=question.get_status(request.POST['answer']))
     option.save()
     bloomer.add_scorevalue_of(question.topic, 0 if option.status == 'r' else +30)
     logging.info('Bloomer %s answered %s to %s (%s)' % (bloomer.user.username, option.text, question.pk, option.status))

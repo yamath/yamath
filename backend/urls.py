@@ -11,6 +11,7 @@ urlpatterns = [
   url(r'^claims/$', views.claims, name="claims"),
   url(r'^classrooms/', views.classrooms, name="classrooms"),
   url(r'^classroom_details/(?P<serial>[0-9A-Za-z]+)/$', views.classroom_details, name="classroom_details"),
+  url(r'^new_question/', views.new_question, name="new_question"),
   url(r'^pendings/', views.pendings, name="pendings"),
   url(r'^pending_details/(?P<option_pk>[0-9A-Za-z]+)/', views.pending_details, name="pending_details"),
   url(r'^pending_solved/(?P<option_pk>[0-9A-Za-z]+)/', views.pending_solved, name="pending_solved"),

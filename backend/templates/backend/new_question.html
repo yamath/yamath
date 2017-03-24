@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="container">
-    <form method="post" action="{% url 'backend:question_details' question.pk %}" autocomplete="off">
+    <form method="post" action="{% url 'backend:new_question' %}" autocomplete="off">
     {% csrf_token %}
     <div class="row">
         <div class="col-xs-12 header text-left"><h1>Question {{ question.pk }}</h1></div>
@@ -59,17 +59,6 @@
     <div class="row">
         <div class="col-xs-12">
             <input type="submit" value="salva" style="width:100%;">
-        </div>
-    </div>
-    </form>
-    <form method="post" action="{% url 'backend:new_question' %}" autocomplete="off">
-    {% csrf_token %}
-    <div class="row">
-        <div class="col-xs-12">
-            <input type="submit" value="nuova" style="width:100%;">
-            <input type="hidden" name="topic_pk" value="{{ question.topic.pk }}" />
-            <input type="hidden" name="question_text" value="" />
-            <input type="hidden" name="question_kind" value="{{ question.kind }}" />
         </div>
     </div>
     </form>
