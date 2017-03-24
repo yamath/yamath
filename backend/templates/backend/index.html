@@ -14,7 +14,7 @@
         </div>
         <div class="col-xs-8 collapse" id="bloomers">
             {% for bloomer in bloomers %}
-            <p>Bloomer <a href="{% url 'backend:bloomer_details' bloomer.user.username %}">{{ bloomer.user.username }}</a></p>
+            <p>Bloomer <a href="{% url 'backend:bloomer_details' bloomer.user.username %}">{{ bloomer.user.username }}</a> ({{ bloomer.score_mean }}%)</p>
             {% endfor %}
         </div>
     </div>

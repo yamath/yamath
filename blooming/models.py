@@ -24,8 +24,11 @@ class Bloomer(models.Model):
     def _get_classrooms(self):
         return [ cb.classroom for cb in ClassroomBloomer.objects.filter(bloomer=self) ]
 
+    def _get_score_mean(self):
+        return sum( self.get_scorevalue_of(t) for t in self.topics )/len(self.topics)
+
     def _get_topics(self):
-        return [ topic for classroom in self.classrooms for topic in classroom.topics ]
+        return list({ topic for classroom in self.classrooms for topic in classroom.topics })
 
     def get_scorevalue_of(self, topic):
         try:
@@ -52,6 +55,7 @@ class Bloomer(models.Model):
 
     classrooms = property(_get_classrooms)
     topics = property(_get_topics)
+    score_mean = property(_get_score_mean)
 
 class Classroom(models.Model):
     serial = models.CharField(max_length=4, unique=True)

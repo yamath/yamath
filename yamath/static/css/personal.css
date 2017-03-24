@@ -29,3 +29,16 @@ form .container .row .col-xs-8 {
 form .container .row .col-xs-8 input[type="text"] {
     width: 70%;
 }
+
+.index_container .row {
+    padding-bottom: 4px;
+    padding-top: 4px;
+}
+
+.index_container .row:hover {
+    background-color: #def;
+}
+
+.index_container .header:hover{
+    background-color: #fff;
+}

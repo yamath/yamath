@@ -9,7 +9,7 @@ from django.contrib import messages
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def index(request):
-    bloomers = blooming.Bloomer.objects.all()
+    bloomers = sorted(blooming.Bloomer.objects.all(), key=(lambda bloomer: bloomer.score_mean))
     classrooms = blooming.Classroom.objects.all()
     topics = blooming.Topic.objects.all()
     claims = backend.Claim.objects.all()

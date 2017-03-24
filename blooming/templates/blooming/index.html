@@ -3,17 +3,33 @@
 {% block content %}
 
 {% if user.is_authenticated %}
-<p>Benvenut* {{ user.username }}!</p>
-<hr />
-<p>Questi i tuoi risultati attuali:
-<ol>
-{% for tuple in info %}
-  <li><span class="topic_{{ tuple.2 }}">{{ tuple.0.text }}: {{ tuple.1 }}% ...</span> <a href="{% url 'blooming:question' tuple.0.pk %}">esercitati</a>!</li>
-{% endfor %}
-</ol>
-</p>
+<div class="container index_container">
+    <div class="row header">
+        <div class="col-xs-12">
+            <h1>Benvenut@ {{ user.username }}</h1>
+            <p>Attualmente hai un punteggio complessivo del {{ bloomer.score_mean }}%.</p>
+        </div>
+    </div>
+    {% for tuple in info %}
+    <div class="row" onclick="location.href='{% url 'blooming:question' tuple.0.pk %}';" style="cursor: pointer;">
+        <div class="col-xs-2 col-sm-1">
+            {{ tuple.1 }}%
+        </div>
+        <div class="col-xs-8 col-sm-11">
+            <span class="topic_{{ tuple.2 }}">{{ tuple.0.text }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% else %}
-<p>Benvenuto nella pagina di allenamento. Per vedere il proprio profilo e fare allenamento effettuare il login.</p>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>Benvenuto eternauta</h1>
+            <p>Questa è una pagina di allenamento. Se hai un profilo, procedi al login.</p>
+        </div>
+    </div>
+</div>
 {% endif %}
 
 {% endblock %}
