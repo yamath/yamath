@@ -40,7 +40,7 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            {% for option in question.shuffled_options %}
+            {% for option in question.get_uptofive %}
             <p><input type="radio" name="option_{{ option.pk }}" value="{{ option.text }}"/> {{ option.text|safe }}</p>
             {% endfor %}
         </div>

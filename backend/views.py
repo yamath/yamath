@@ -5,6 +5,7 @@ from django.views.decorators.cache import never_cache
 import blooming.models as blooming
 import backend.models as backend
 from django.contrib import messages
+from backend.create_views import *
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
@@ -93,6 +94,7 @@ def classroom_details(request, serial):
             classroom.delete_bloomer(blooming.Bloomer.objects.get(user=User.objects.get(request.POST['delete_bloomer'])))
         classroom.save()
         return render(request, 'backend/classroom_details.html', {'classroom':classroom})
+
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)

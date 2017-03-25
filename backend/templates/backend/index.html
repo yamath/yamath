@@ -36,6 +36,10 @@
             {% for topic in topics %}
             <p>Topic <a href="{% url 'backend:topic_details' topic.pk %}">{{ topic.pk }}</a>: {{ topic.text }}</p>
             {% endfor %}
+            <form method="post" action="{% url 'backend:create_topic' %}" autocomplete="off">
+                {% csrf_token %}
+                New <input type="text" name="create_topic_text" /><input type="submit" value="save" />
+            </form>
         </div>
     </div>
     <div class="row">
@@ -50,7 +54,9 @@
                 <input type="text" name="question_pk" />
                 <input type="submit" value="go" />
                 </form>
-                <a href="{% url 'backend:new_question' %}">new question</a>
+                <p><a href="{% url 'backend:create_bulk_bool' %}">create bulk bool</a></p>
+                <p><a href="{% url 'backend:create_multi' %}">create multi</a></p>
+                <p><a href="{% url 'backend:new_question' %}">new question</a></p>
             </p>
         </div>
     </div>

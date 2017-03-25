@@ -43,10 +43,14 @@ def question(request, topic_pk):
 def submit(request):
     bloomer = Bloomer.objects.get(user=request.user)
     question = Question.objects.get(pk=int(request.POST['question_pk']))
+    try:
+        answer = request.POST['answer']
+    except KeyError:
+        answer = ''
     if question.kind in ['ibool', 'pbool']:
         try:
-            status = Option.objects.filter(questio=question, text=request.POST['answer']).first().status
-        except:
+            status = Option.objects.filter(question=question, text=answer).first().status
+        except AttributeError:
             status = 'r'
         option = Option(user=bloomer.user, question=question, text=request.POST['answer'], status=status)
     elif question.kind in ['imulti', 'pmulti']:

@@ -220,6 +220,11 @@ class Question(models.Model):
         except:
             return None
 
+    def get_uptofive(self):
+        l =  [self.get_correct()] + [ Option.objects.filter(question=self, text=text).first() for text in { option.text for option in Option.objects.filter(question=self) if option.status == 'r' } ][:4]
+        shuffle(l)
+        return l
+
     def get_status(self, answer):
         equivalent_options = Option.objects.filter(question=self, text=answer)
         if len(equivalent_options)>0:

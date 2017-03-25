@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <form method="post" action="{% url 'backend:create_bulk_bool' %}" autocomplete="off">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-xs-12 header text-left"><h1>Create bulk bool</h1></div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <p>Topic <input type="text" name="topic_pk" value="" /></p>
+        </div>
+        <div class="col-xs-4">
+            <p>Kind <input type="text" name="kind" value="" /></p>
+        </div>
+    </div>
+    {% for i in "0123456789"|make_list %}
+    <div class="row">
+        <div class="col-xs-1">
+            <p>Vero? <input type="checkbox" name="checkbox_{{ i }}" /></p>
+        </div>
+        <div class="col-xs-11">
+            <textarea name="text_{{ i }}" style="width:100%; height:30px;"></textarea></p>
+        </div>
+    </div>
+    {% endfor %}
+    <div class="row">
+        <div class="col-xs-12">
+            <input type="submit" value="salva" style="width:100%;">
+        </div>
+    </div>
+    </form>
+</div>
+<!--
+<p>Topic</p>
+<p>Text: {{ topic.text }} </p>
+<p>Bloom: {{ topic.bloom_index }} {% if topic.mobile %}mobile{% endif %}</p>
+<p>Antes: {% for ante in topic.antes %}<a href="{% url 'backend:topic_details' ante.pk %}">{{ ante.pk }}</a>, {% endfor %}</p>
+<p>Posts: {% for post in topic.posts %}<a href="{% url 'backend:topic_details' post.pk %}">{{ post.pk }}</a>, {% endfor %}</p>
+<p>Classrooms: {% for classroom in topic.classrooms %}<a href="{% url 'backend:classroom_details' classroom.serial %}">{{ classroom.serial }}</a>, {% endfor %}</p>
+<hr />
+<form method="post" action="% url 'backend:topic_details' topic.pk %}" autocomplete="off">
+{% csrf_token %}
+<p>Text: <input type="text" name="text" value="{{ topic.text }}" /></p><hr />
+<p>Bloom: <input type="text" name="bloom_index" value="{{ topic.bloom_index }}" /> mobile <input type="checkbox" name="mobile" {% if topic.mobile %}checked{% endif %}</p><hr />
+<p>Antes: add one<input type="text" name="new_ante" value="" />
+<ol>
+    {% for ante in topic.antes %}
+    <li>
+        <input type="checkbox" name="antes_checkbox_{{ ante.pk }}" checked/> {{ ante.pk }}
+    </li>
+    {% endfor %}
+</ol></p><hr />
+<p>Posts: add one<input type="text" name="new_post"/>
+<ol>
+    {% for post in topic.posts %}
+    <li>
+        <input type="checkbox" name="posts_checkbox_{{ post.pk }}" checked/> {{ post.pk }}
+    </li>
+    {% endfor %}
+</ol></p><hr />
+<p>Classrooms:<ol>
+    {% for classroom in classrooms %}
+    <li>
+        <input type="checkbox" name="classroom_checkbox_{{ classroom.serial }}" {% if classroom in topic.classrooms %}checked{% endif %} /> {{ classroom.serial }}
+    </li>
+    {% endfor %}
+</ol></p>
+<input type="submit" value="salva" />
+</form>
+-->
+{% endblock %}

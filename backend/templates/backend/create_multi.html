@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <form method="post" action="{% url 'backend:create_multi' %}" autocomplete="off">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-xs-12 header text-left"><h1>Create multi</h1></div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <p>Topic <input type="text" name="topic_pk" value="{{ topic.pk }}" /></p>
+        </div>
+        <div class="col-xs-4">
+            <p>Kind <input type="text" name="kind" value="{{ question.kind }}" /></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-1">
+            <button href="#" onclick="document.getElementById('display_area').innerHTML = document.getElementById('input_area').value;MathJax.Hub.Queue(['Typeset',MathJax.Hub,'display_area']);return false;">Text</button>
+        </div>
+        <div class="col-xs-6">
+            <textarea name="text" style="width:100%; height:90px;"  id="input_area">{{ question.text }}</textarea></p>
+        </div>
+        <div class="col-xs-5">
+            <p id="display_area"></p>
+        </div>
+    </div>
+    {% for o in options %}
+    <div class="row">
+        <div class="col-xs-1">
+            <p>Accept <input type="checkbox" name="checkbox_o{{ o.pk }}" {% if o.status == 'a' %}checked{% endif %} /></p>
+        </div>
+        <div class="col-xs-11">
+            <textarea name="optiontext_o{{ o.pk }}" style="width:100%; height:30px;">{{ o.text }}</textarea></p>
+        </div>
+    </div>
+    {% endfor %}
+    {% for i in "0123"|make_list %}
+    <div class="row">
+        <div class="col-xs-1">
+            <p>Accept <input type="checkbox" name="checkbox_{{ i }}" /></p>
+        </div>
+        <div class="col-xs-11">
+            <textarea name="optiontext_{{ i }}" style="width:100%; height:30px;"></textarea></p>
+        </div>
+    </div>
+    {% endfor %}
+    <div class="row">
+        <div class="col-xs-12">
+            <input type="submit" value="salva" style="width:100%;">
+        </div>
+    </div>
+    </form>
+</div>
+{% endblock %}
