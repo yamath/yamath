@@ -1,7 +1,7 @@
 import blooming.models as blooming
 from django.contrib.auth.models import User
 
-f = open('database.txt', 'w')
+f = open('backup/datadump.py', 'w')
 
 users = [ (u.username, u.password) for u in User.objects.all() ]
 f.write('users = '+repr(users)+'\n')
@@ -32,7 +32,7 @@ def getattr_or_none(obj, attr):
         return None
 
 f.write('options = '+
-        repr([ (getattr_or_none(o, 'user.username'), o.question.pk, o.text, o.status, o.submit_time, o.interval) for o in blooming.Option.objects.all() ])+
+        repr([ (getattr_or_none(o, 'user.username'), o.question.pk, o.text, o.status, repr(o.submit_time), o.interval) for o in blooming.Option.objects.all() ])+
         '\n')
 
 f.write('questions = '+

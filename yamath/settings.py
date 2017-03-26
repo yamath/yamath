@@ -76,9 +76,12 @@ WSGI_APPLICATION = 'yamath.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+#MASTER DATABASE
 DATABASES = {'default': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'yamath$default', 'USER': 'yamath', 'PASSWORD': 'coitanra', 'HOST': 'yamath.mysql.pythonanywhere-services.com'}, 'TEST': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'yamath$test_default', 'USER': 'yamath', 'PASSWORD': 'coitanra', 'HOST': 'yamath.mysql.pythonanywhere-services.com'}}
 
-#DATABASES = {'default': { 'ENGINE': 'django.db.backends.sqlite3', 'NAME': os.path.join(BASE_DIR, 'db.sqlite3')}}
+#LEFT DATABASE
+#DATABASES = {'default': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'yamath$left', 'USER': 'yamath', 'PASSWORD': 'coitanra', 'HOST': 'yamath.mysql.pythonanywhere-services.com'}, 'TEST': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'yamath$test_default', 'USER': 'yamath', 'PASSWORD': 'coitanra', 'HOST': 'yamath.mysql.pythonanywhere-services.com'}}
+
 
 
 # Password validation
