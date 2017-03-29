@@ -5,7 +5,7 @@
 <h1>Claims</h1>
 
 {% for claim in claims %}
-<p>Bloomer <a href="{% url 'backend:bloomer_details' claim.bloomer.user.username %}">{{ claim.bloomer.user.username }}</a> {{ claim.bloomer.classrooms }}</p>
+<p>Bloomer {% if claim.bloomer.user %}<a href="{% url 'backend:bloomer_details' claim.bloomer.user.username %}">{{ claim.bloomer.user.username }}</a> {{ claim.bloomer.classrooms }}{% else %}no one{% endif %}</p>
 {% if claim.topic %}
     <p>Topic <a href="{% url 'backend:topic_details' claim.topic.pk %}">{{ claim.topic.pk }}</a>: {{ claim.topic.text }}</p>
 {% else %}
