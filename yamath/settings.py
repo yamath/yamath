@@ -76,13 +76,13 @@ WSGI_APPLICATION = 'yamath.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 #MASTER DATABASE
-# DATABASES = {'default': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'yamath$default', 'USER': 'yamath', 'PASSWORD': 'coitanra', 'HOST': 'yamath.mysql.pythonanywhere-services.com'}, 'TEST': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'yamath$test_default', 'USER': 'yamath', 'PASSWORD': 'coitanra', 'HOST': 'yamath.mysql.pythonanywhere-services.com'}}
+DATABASES = {'default': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'yamath$default', 'USER': 'yamath', 'PASSWORD': 'coitanra', 'HOST': 'yamath.mysql.pythonanywhere-services.com'}, 'TEST': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'yamath$test_default', 'USER': 'yamath', 'PASSWORD': 'coitanra', 'HOST': 'yamath.mysql.pythonanywhere-services.com'}}
 
 #LEFT DATABASE
 #DATABASES = {'default': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'yamath$left', 'USER': 'yamath', 'PASSWORD': 'coitanra', 'HOST': 'yamath.mysql.pythonanywhere-services.com'}, 'TEST': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'yamath$test_default', 'USER': 'yamath', 'PASSWORD': 'coitanra', 'HOST': 'yamath.mysql.pythonanywhere-services.com'}}
 
 #LOCAL DATABASE
-DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': 'local', } }
+#DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': 'local', } }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
