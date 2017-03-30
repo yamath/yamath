@@ -23,7 +23,7 @@ def index(request):
     info = sorted(info, key=lambda x: 1 if x[2]=='ok' else (2 if x[2]=='todo' else 3))
     return render(request, 'blooming/index.html', {'info':info, 'bloomer':bloomer})
   else:
-    return render(request, 'blooming/index.html')
+    return render(request, 'homepage.html')
 
 @never_cache
 @login_required
