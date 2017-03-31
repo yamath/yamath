@@ -2,7 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.shortcuts import redirect, render
 from random import choice
-from .models import Bloomer, Classroom, Topic, Question, Option, Score, Collection
+from content.models import *
+from blooming.models import *
 #from django.contrib import messages
 import logging
 

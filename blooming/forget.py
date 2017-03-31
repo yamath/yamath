@@ -1,4 +1,4 @@
-from .models import Bloomer, Score
+from blooming.models import *
 from random import choice
 import logging
 

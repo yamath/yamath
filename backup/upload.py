@@ -31,6 +31,8 @@ for (username, cpk) in dump.classroombloomers:
     )
     cb.save()
 
+print("User: done")
+
 tlink = {}
 serial = '000'
 onemore = lambda s: "{0:03}".format(int(s)+1)
@@ -54,10 +56,12 @@ for s in Serie.objects.all():
 
 for (t, c) in dump.topicclassroom:
     tc = TopicClassroom(
-        topic=Topic.objects.get(serie=Serie.objects.get(pk=tlink[t])).first(),
+        topic=Topic.objects.filter(serie=Serie.objects.get(pk=tlink[t])).first(),
         classroom=Classroom.objects.get(pk=clink[c]),
     )
     tc.save()
+
+print("Topics: done")
 
 qlink = {}
 klink = {
@@ -72,13 +76,22 @@ klink = {
 }
 for (qpk, text, tpk, something, kind) in dump.questions:
     topic = Topic.objects.filter(serie=Serie.objects.get(pk=tlink[t])).first()
-    q = Question(
-        serial = topic.serial + onemore(max( q.serial for q in Question.objects.filter(topic=topic) )),
-        text=text,
-        topic=,
-        kind=klink[kind],)
-    q.save()
+    serial = '000'
+    while True:
+        serial = onemore(serial)
+        try:
+            q = Question(
+                serial = topic.serial + serial,
+                text=text,
+                topic=topic,
+                kind=klink[kind],)
+            q.save()
+        except:
+            continue
+        break
     qlink[qpk]=q.pk
+
+print("Question:done")
 
 for (username, qpk, text, status, submit, interval) in dump.options:
     if qpk==None:
@@ -92,6 +105,8 @@ for (username, qpk, text, status, submit, interval) in dump.options:
             text = text,
             accepted = True if status == 'a' else False,)
         o.save()
+
+print("Option: done")
 
 for (username, tpk, value) in dump.scores:
     Score(

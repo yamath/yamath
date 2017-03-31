@@ -21,21 +21,6 @@ class Serie(models.Model):
     def __str__(self):
         return self.name
 
-    def get_antes(self):
-        return list({ ss.ante for ss in SerieSerie.objects.filter(ante=self) })
-
-    def set_hindex(self):
-        if self.antes:
-            self.hindex = max( s.hindex for s in self.antes ) + 1
-        else:
-            self.hindex = 1
-
-    def get_posts(self):
-        return list({ ss.post for ss in SerieSerie.objects.filter(ante=self) })
-
-    def get_topics(self):
-        return list(Topic.objects.filter(serie=self))
-
     def add_ante(self, s):
         if isinstance(s, Serie):
             serie = s
@@ -68,9 +53,24 @@ class Serie(models.Model):
         if serie in self.posts:
             SerieSerie.objects.get(ante=self, post=serie).delete()
 
-    antes = property(_get_antes)
-    posts = property(_get_posts)
-    topics = property(_get_topics)
+    def get_antes(self):
+        return list({ ss.ante for ss in SerieSerie.objects.filter(ante=self) })
+
+    def get_posts(self):
+        return list({ ss.post for ss in SerieSerie.objects.filter(ante=self) })
+
+    def get_topics(self):
+        return list(Topic.objects.filter(serie=self))
+
+    def set_hindex(self):
+        if self.antes:
+            self.hindex = max( s.hindex for s in self.antes ) + 1
+        else:
+            self.hindex = 1
+
+    antes = property(get_antes)
+    posts = property(get_posts)
+    topics = property(get_topics)
 
 
 class SerieSerie(models.Model):

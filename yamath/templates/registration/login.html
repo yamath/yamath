@@ -1,35 +1,129 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Applicazione do allenamento per la matematica">
+    <meta name="author" content="Matteo Bortolotto">
+    <!-- <link rel="icon" href="../../favicon.ico"> -->
 
-{% block content %}
+    <title>Yamath</title>
 
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
-    {% endif %}
-{% endif %}
+    <style type="text/css">
+        body {
+          padding-top: 70px;
+          padding-bottom: 30px;
+        }
 
-<form method="post" action="{% url 'login' %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
+        .theme-dropdown .dropdown-menu {
+          position: static;
+          display: block;
+          margin-bottom: 20px;
+        }
 
-<input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
+        .theme-showcase > p > .btn {
+          margin: 5px 0;
+        }
 
-{% endblock %}
+        .theme-showcase .navbar .container {
+          width: auto;
+        }
+        body {
+            background-color: #ddd;
+        }
+        .login {
+          margin-top: 25px !important;
+          padding: 5px;
+          width: auto;
+          min-width: 320px;
+          max-width: 400px;
+          height: 400px;
+          background-color: #f3f3f3;
+          margin:0 auto;
+          border-radius: 10px;
+          border: 1px solid ##c5c5c5;
+            text-align: center;
+        }
+        .login-inner {
+          margin:0 auto;
+          max-width: 380px;
+          width: auto;
+        }
+        .login>h4 {
+          font-size: 20px;
+          margin-left: 5px;
+          font-weight: 600;
+        }
+        .email {
+          margin-bottom: 5px;
+        }
+        .password {
+          margin-bottom: 5px;
+        }
+        .submit {
+          margin-top: 5px;
+        }
+        .forgot {
+          min-width:50px;
+          width: 49%;
+          float: right;
+          margin-top: 20px;
+        }
+        .register {
+          width: 50%;
+          float: left;
+          margin-top: 20px;
+        }
+        @media (max-width: 320px) {
+          .forgot {
+            font-size: 9px;
+            font-weight: 700;
+            padding: 8px;
+          }
+        }
+
+    </style>
+  </head>
+
+  <body>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Yamath</a>
+        </div>
+      </div>
+    </nav>
+    
+<div class="container">
+  <div class="login">
+    <h4>Accedi</h4>
+      <hr>
+      <form class="login-inner">
+        <input type="text" class="form-control email" id="email-input" placeholder="Nome utente">
+        <input type="password" class="form-control password" id="password-input" placeholder="Parola chiave">
+        <input class="btn btn-block btn-lg btn-success submit" type="submit" value="Login">
+      </form>
+  </div>
+</div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+  </body>
+</html>

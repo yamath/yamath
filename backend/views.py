@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test
 from django.views.decorators.cache import never_cache
-import blooming.models as blooming
+from blooming.models import *
+from content.models import *
 import backend.models as backend
 from django.contrib import messages
 from backend.create_views import *
@@ -10,23 +11,23 @@ from backend.create_views import *
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def index(request):
-    bloomers = sorted(blooming.Bloomer.objects.all(), key=(lambda bloomer: bloomer.score_mean))
-    classrooms = blooming.Classroom.objects.all()
-    topics = blooming.Topic.objects.all()
+    bloomers = sorted(Bloomer.objects.all(), key=(lambda bloomer: bloomer.score_mean))
+    classrooms = Classroom.objects.all()
+    topics = Topic.objects.all()
     claims = backend.Claim.objects.all()
-    pendings = blooming.Option.objects.filter(status='p')
+    pendings = Option.objects.filter(status='p')
     return render(request, 'backend/index.html', {'bloomers':bloomers, 'classrooms':classrooms, 'topics':topics, 'claims':claims, 'pendings':pendings})
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def bloomers(request):
-    return render(request, 'backend/bloomers.html', {'bloomers':blooming.Bloomer.objects.all()})
+    return render(request, 'backend/bloomers.html', {'bloomers':Bloomer.objects.all()})
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def bloomer_details(request, username):
-    bloomer = blooming.Bloomer.objects.get(user=User.objects.get(username=username))
-    classrooms = blooming.Classroom.objects.all()
+    bloomer = Bloomer.objects.get(user=User.objects.get(username=username))
+    classrooms = Classroom.objects.all()
     if request.method == 'GET':
         return render(request, 'backend/bloomer_details.html', {'bloomer':bloomer, 'classrooms':classrooms})
     elif request.method == 'POST':
@@ -40,19 +41,19 @@ def bloomer_details(request, username):
 
 def claim(request):
     try:
-        bloomer = blooming.Bloomer.objects.get(pk=request.POST['claim_bloomer_pk'])
+        bloomer = Bloomer.objects.get(pk=request.POST['claim_bloomer_pk'])
     except:
         bloomer = None
     try:
-        topic = blooming.Topic.objects.get(pk=request.POST['claim_topic_pk'])
+        topic = Topic.objects.get(pk=request.POST['claim_topic_pk'])
     except:
         topic = None
     try:
-        question = blooming.Question.objects.get(pk=request.POST['claim_question_pk'])
+        question = Question.objects.get(pk=request.POST['claim_question_pk'])
     except:
         question = None
     try:
-        option = blooming.Option.objects.get(pk=request.POST['claim_option_pk'])
+        option = Option.objects.get(pk=request.POST['claim_option_pk'])
     except:
         option = None
     backend.Claim(bloomer=bloomer, topic=topic, question=question, option=option).save()
@@ -73,25 +74,25 @@ def claims(request):
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def classrooms(request):
-    return render(request, 'backend/classrooms.html', {'classrooms':blooming.Classroom.objects.all()})
+    return render(request, 'backend/classrooms.html', {'classrooms':Classroom.objects.all()})
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def classroom_details(request, serial):
-    classroom = blooming.Classroom.objects.get(serial=serial)
+    classroom = Classroom.objects.get(serial=serial)
     if request.method == 'GET':
         return render(request, 'backend/classroom_details.html', {'classroom':classroom})
     elif request.method == 'POST':
         #classroom.update_bloomers([ key[17:] for key in request.POST.keys() if key[:17]=='bloomer_checkbox_' ] + [request.POST['new_bloomer']])
         classroom.serial = request.POST['serial']
         if request.POST['add_topic']:
-            classroom.add_topic(blooming.Topic.objects.get(pk=int(request.POST['add_topic'])))
+            classroom.add_topic(Topic.objects.get(pk=int(request.POST['add_topic'])))
         if request.POST['add_bloomer']:
-            classroom.add_bloomer(blooming.Bloomer.objects.get(user=User.objects.get(request.POST['add_bloomer'])))
+            classroom.add_bloomer(Bloomer.objects.get(user=User.objects.get(request.POST['add_bloomer'])))
         if request.POST['delete_topic']:
-            classroom.delete_topic(blooming.Topic.objects.get(pk=int(request.POST['delete_topic'])))
+            classroom.delete_topic(Topic.objects.get(pk=int(request.POST['delete_topic'])))
         if request.POST['delete_bloomer']:
-            classroom.delete_bloomer(blooming.Bloomer.objects.get(user=User.objects.get(request.POST['delete_bloomer'])))
+            classroom.delete_bloomer(Bloomer.objects.get(user=User.objects.get(request.POST['delete_bloomer'])))
         classroom.save()
         return render(request, 'backend/classroom_details.html', {'classroom':classroom})
 
@@ -102,13 +103,13 @@ def new_question(request):
     if request.method == 'GET':
         return render(request, 'backend/new_question.html', {'question':None})
     elif request.method == 'POST':
-        question = blooming.Question(topic=blooming.Topic.objects.get(pk=request.POST['topic_pk']),
+        question = Question(topic=Topic.objects.get(pk=request.POST['topic_pk']),
                                      text=request.POST['question_text'],
                                      kind=request.POST['question_kind'])
         question.save()
         for (key, value) in request.POST.items():
             if key[:11]=='option_text':
-                option = blooming.Option.objects.get(pk=int(key[11:]))
+                option = Option.objects.get(pk=int(key[11:]))
                 if value=='':
                     option.delete()
                 else:
@@ -116,23 +117,23 @@ def new_question(request):
                     option.status = 'a' if ('option_accepted'+key[11:] in request.POST) else 'r'
                     option.save()
         if 'new_option_text' in request.POST and request.POST['new_option_text'] != '':
-            new_option = blooming.Option(question=question, user=request.user, text=request.POST['new_option_text'], status=('a' if ('new_option_accepted' in request.POST) else 'r'))
+            new_option = Option(question=question, user=request.user, text=request.POST['new_option_text'], status=('a' if ('new_option_accepted' in request.POST) else 'r'))
             new_option.save()
         return render(request, 'backend/question_details.html', {'question':question})
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def pendings(request):
-    return render(request, 'backend/pendings.html', {'pendings':blooming.Option.objects.filter(status='p')})
+    return render(request, 'backend/pendings.html', {'pendings':Option.objects.filter(status='p')})
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def pending_details(request, option_pk):
-    option = blooming.Option.objects.get(pk=option_pk)
-    other_options = blooming.Option.objects.filter(question=option.question, text=option.text)
+    option = Option.objects.get(pk=option_pk)
+    other_options = Option.objects.filter(question=option.question, text=option.text)
     other_accepted = any( o.status == 'a' for o in other_options )
     other_rejected = any( o.status == 'r' for o in other_options )
-    correct_answers = list({o.text for o in blooming.Option.objects.filter(question=option.question, status='a')})
+    correct_answers = list({o.text for o in Option.objects.filter(question=option.question, status='a')})
     if request.method == 'GET':
         return render(request, 'backend/pending_details.html', {'option':option, 'correct_answers':correct_answers, 'other_accepted':other_accepted, 'other_rejected':other_rejected})
     elif request.method == 'POST':
@@ -145,7 +146,7 @@ def pending_details(request, option_pk):
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def pending_solved(request, option_pk):
-    option = blooming.Option.objects.get(pk=option_pk)
+    option = Option.objects.get(pk=option_pk)
     if 'option_accepted' in request.POST:
         option.status = 'a'
     elif 'option_rejected' in request.POST:
@@ -160,16 +161,16 @@ def pending_solved(request, option_pk):
 def question_details(request, question_pk):
     if (question_pk==None or question_pk=='None'):
         question_pk = request.GET['question_pk']
-    question = blooming.Question.objects.get(pk=question_pk)
+    question = Question.objects.get(pk=question_pk)
     if request.method == 'GET':
         return render(request, 'backend/question_details.html', {'question':question})
     elif request.method == 'POST':
-        question.topic = blooming.Topic.objects.get(pk=request.POST['topic_pk'])
+        question.topic = Topic.objects.get(pk=request.POST['topic_pk'])
         question.text = request.POST['question_text']
         question.kind = request.POST['question_kind']
         for (key, value) in request.POST.items():
             if key[:11]=='option_text':
-                option = blooming.Option.objects.get(pk=int(key[11:]))
+                option = Option.objects.get(pk=int(key[11:]))
                 if value=='':
                     option.delete()
                 else:
@@ -177,7 +178,7 @@ def question_details(request, question_pk):
                     option.status = 'a' if ('option_accepted'+key[11:] in request.POST) else 'r'
                     option.save()
         if request.POST['new_option_text'] != '':
-            new_option = blooming.Option(question=question, user=request.user, text=request.POST['new_option_text'], status=('a' if ('new_option_accepted' in request.POST) else 'r'))
+            new_option = Option(question=question, user=request.user, text=request.POST['new_option_text'], status=('a' if ('new_option_accepted' in request.POST) else 'r'))
             new_option.save()
         question.save()
         return render(request, 'backend/question_details.html', {'question':question})
@@ -185,14 +186,14 @@ def question_details(request, question_pk):
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def topics(request):
-    return render(request, 'backend/topics.html', {'topics':blooming.Topic.objects.all()})
+    return render(request, 'backend/topics.html', {'topics':Topic.objects.all()})
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def topic_details(request, pk):
-    topic = blooming.Topic.objects.get(pk=pk)
-    classrooms = blooming.Classroom.objects.all()
-    questions = blooming.Question.objects.filter(topic=topic)
+    topic = Topic.objects.get(pk=pk)
+    classrooms = Classroom.objects.all()
+    questions = Question.objects.filter(topic=topic)
     if request.method == 'GET':
         return render(request, 'backend/topic_details.html', {'topic':topic, 'classrooms':classrooms, 'questions':questions})
     elif request.method == 'POST':
