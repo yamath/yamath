@@ -29,18 +29,7 @@ def login_view(request):
 def index(request):
   if request.user.is_authenticated():
     bloomer = Bloomer.objects.get(user=request.user)
-    info = set()
-    for t in bloomer.topics:
-      score_value = bloomer.get_scorevalue_of(t)
-      if score_value > 90:
-        topic_status = 'ok'
-      elif all( bloomer.get_scorevalue_of(ante)>90 for ante in t.antes):
-        topic_status = 'todo'
-      else:
-        topic_status = 'far'
-      info.add((t, score_value, topic_status))
-    info = sorted(info, key=lambda x: 1 if x[2]=='ok' else (2 if x[2]=='todo' else 3))
-    return render(request, 'blooming/profile.html', {'info':info, 'bloomer':bloomer})
+    return render(request, 'blooming/index.html', {'bloomer':bloomer})
   else:
     return render(request, 'blooming/homepage.html')
 

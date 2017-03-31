@@ -41,31 +41,91 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar0">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
+          </button> -->
+          <button type="button" class="navbar-toggle">
+            <span class="glyphicon glyphicon-log-out" style="color:#ddd;"></span>
+          </button>
+          <button type="button" class="navbar-toggle">
+            <span class="glyphicon glyphicon-envelope" style="color:#ddd;"></span>
+          </button>
+          <button type="button" class="navbar-toggle">
+            <span class="glyphicon glyphicon-book" style="color:#ddd;"></span>
+          </button>
+          <button type="button" class="navbar-toggle">
+            <span class="glyphicon glyphicon-user" style="color:#ddd;"></span>
           </button>
           <a class="navbar-brand" href="/">Yamath</a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
+        <div id="navbar0" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="#">Profilo</a></li>
-            <li><a href="#">Contenuti</a></li>
-            <li><a href="#">Qualcosa non va</a></li>
+            <li>
+              <form class="navbar-form form-inline" method="get" action="#" autocomplete="off">
+                {% csrf_token %}
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                  Profilo <span class="glyphicon glyphicon-user"></span>
+                </button>
+              </form>
+            </li>
+            <li>
+              <form class="navbar-form form-inline" method="get" action="{% url 'blooming:index' %}" autocomplete="off">
+                {% csrf_token %}
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                  Contenuti <span class="glyphicon glyphicon-book"></span>
+                </button>
+              </form>
+            </li>
+            <li>
+              <form class="navbar-form form-inline" method="post" action="{% url 'backend:claim' %}" autocomplete="off">
+                {% csrf_token %}
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                  Messaggio <span class="glyphicon glyphicon-envelope"></span>
+                </button>
+                <input type="hidden" name="session_user" value="{{ session_user }}" />
+                <input type="hidden" name="session_topic" value="{{ session_topic }}" />
+                <input type="hidden" name="session_answer" value="{{ session_answer }}" />
+                <input type="hidden" name="session_questionpk" value="{{ session_questionpk }}" />
+              </form>
+            </li>
+            <li>
+              <form class="navbar-form form-inline" method="post" action="{% url 'logout' %}" autocomplete="off">
+                {% csrf_token %}
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                  Esci <span class="glyphicon glyphicon-log-out"></span>
+                </button>
+              </form>
+            </li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
+
+    <div class="container">
+      {% if messages %}
+      <div class="row">
+        <div class="col-xs-12">
+          {% for message in messages %}
+          {% if message.tags == 'error' %}
+          <div class="alert alert-danger">{{ message }}</div>
+          {% elif message.tags == 'success' %}
+          <div class="alert alert-success">{{ message }}</p>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
     
     <div class="container theme-showcase" role="main">
       <div class="jumbotron">
-        <h1>Benvenut@ {{ request.user.username }}</h1>
-        <p>Questo è il tuo profilo personale. Se è necessario puoi cambiare alcuni dei tuoi dati.</p>
+        <h1>Questa pagina non è ancora pronta</h1>
       </div>
 
-      <div class="page-header">
+      <!-- <div class="page-header">
         <h1>Dati</h1>
       </div>
       <div class="row">
@@ -92,7 +152,7 @@
           </table>
         </div>
         <div class="col-md-2"></div>
-      </div>
+      </div> -->
     </div>
 
 

@@ -1,35 +1,167 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Applicazione do allenamento per la matematica">
+    <meta name="author" content="Matteo Bortolotto">
+    <!-- <link rel="icon" href="../../favicon.ico"> -->
 
-{% block content %}
+    <title>Yamath</title>
 
-{% if user.is_authenticated %}
-<div class="container index_container">
-    <div class="row header">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <style type="text/css">
+        body {
+          padding-top: 70px;
+          padding-bottom: 30px;
+        }
+
+        .theme-dropdown .dropdown-menu {
+          position: static;
+          display: block;
+          margin-bottom: 20px;
+        }
+
+        .theme-showcase > p > .btn {
+          margin: 5px 0;
+        }
+
+        .theme-showcase .navbar .container {
+          width: auto;
+        }
+    </style>
+  </head>
+
+  <body>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar0">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button> -->
+          <button type="button" class="navbar-toggle">
+            <span class="glyphicon glyphicon-log-out" style="color:#ddd;"></span>
+          </button>
+          <button type="button" class="navbar-toggle">
+            <span class="glyphicon glyphicon-envelope" style="color:#ddd;"></span>
+          </button>
+          <button type="button" class="navbar-toggle">
+            <span class="glyphicon glyphicon-book" style="color:#ddd;"></span>
+          </button>
+          <button type="button" class="navbar-toggle">
+            <span class="glyphicon glyphicon-user" style="color:#ddd;"></span>
+          </button>
+          <a class="navbar-brand" href="/">Yamath</a>
+        </div>
+        <div id="navbar0" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li>
+              <form class="navbar-form form-inline" method="get" action="#" autocomplete="off">
+                {% csrf_token %}
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                  Profilo <span class="glyphicon glyphicon-user"></span>
+                </button>
+              </form>
+            </li>
+            <li>
+              <form class="navbar-form form-inline" method="get" action="{% url 'blooming:index' %}" autocomplete="off">
+                {% csrf_token %}
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                  Contenuti <span class="glyphicon glyphicon-book"></span>
+                </button>
+              </form>
+            </li>
+            <li>
+              <form class="navbar-form form-inline" method="post" action="{% url 'backend:claim' %}" autocomplete="off">
+                {% csrf_token %}
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                  Messaggio <span class="glyphicon glyphicon-envelope"></span>
+                </button>
+                <input type="hidden" name="session_user" value="{{ session_user }}" />
+                <input type="hidden" name="session_topic" value="{{ session_topic }}" />
+                <input type="hidden" name="session_answer" value="{{ session_answer }}" />
+                <input type="hidden" name="session_questionpk" value="{{ session_questionpk }}" />
+              </form>
+            </li>
+            <li>
+              <form class="navbar-form form-inline" method="post" action="{% url 'logout' %}" autocomplete="off">
+                {% csrf_token %}
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                  Esci <span class="glyphicon glyphicon-log-out"></span>
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      {% if messages %}
+      <div class="row">
         <div class="col-xs-12">
-            <h1>Benvenut@ {{ user.username }}</h1>
-            <p>Attualmente hai un punteggio complessivo del {{ bloomer.score_mean }}%.</p>
+          {% for message in messages %}
+          {% if message.tags == 'error' %}
+          <div class="alert alert-danger">{{ message }}</div>
+          {% elif message.tags == 'success' %}
+          <div class="alert alert-success">{{ message }}</p>
+          {% endif %}
+          {% endfor %}
         </div>
+      </div>
+      {% endif %}
     </div>
-    {% for tuple in info %}
-    <div class="row" onclick="location.href='{% url 'blooming:question' tuple.0.pk %}';" style="cursor: pointer;">
-        <div class="col-xs-2 col-sm-1">
-            {{ tuple.1 }}%
-        </div>
-        <div class="col-xs-8 col-sm-11">
-            <span class="topic_{{ tuple.2 }}">{{ tuple.0.text }}</span>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-{% else %}
-<div class="container">
-    <div class="row">
-        <div class="col-xs-12">
-            <h1>Benvenuto eternauta</h1>
-            <p>Questa è una pagina di allenamento. Se hai un profilo, procedi al login.</p>
-        </div>
-    </div>
-</div>
-{% endif %}
+    
+    <div class="container theme-showcase" role="main">
+      <div class="jumbotron">
+        <h1>Questa pagina non è ancora pronta</h1>
+      </div>
 
-{% endblock %}
+      <!-- <div class="page-header">
+        <h1>Dati</h1>
+      </div>
+      <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+          <table class="table">
+            <tbody>
+              <tr>
+                <td>Nome</td>
+                <td id="profile_firstname">{{ request.user.first_name }}</td>
+                <td><span class="glyphicon glyphicon-pencil"></span></td>
+              </tr>
+              <tr>
+                <td>Cognome</td>
+                <td id="profile_lastname">{{ request.user.last_name }}</td>
+                <td><span class="glyphicon glyphicon-pencil"></span></td>
+              </tr>
+              <tr>
+                <td>Posta elettronica</td>
+                <td id="profile_email">{{ request.user.email }}</td>
+                <td><span class="glyphicon glyphicon-pencil"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-2"></div>
+      </div> -->
+    </div>
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+  </body>
+</html>

@@ -59,7 +59,23 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-    
+
+    <div class="container">
+      {% if messages %}
+      <div class="row">
+        <div class="col-xs-12">
+          {% for message in messages %}
+          {% if message.tags == 'error' %}
+          <div class="alert alert-danger">{{ message }}</div>
+          {% elif message.tags == 'success' %}
+          <div class="alert alert-success">{{ message }}</p>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
     <div class="container theme-showcase" role="main">
       <div class="jumbotron">
         <h1>Benvenut@ eternauta</h1>
