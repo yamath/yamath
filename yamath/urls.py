@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from blooming.views import index
+from blooming.views import index, login_view
 
 urlpatterns = [
     url(r'^$', index),
+    url(r'^login/$', login_view),
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^admin/', admin.site.urls),
     #url(r'^yapp/', include('yapp.urls')),

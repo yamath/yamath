@@ -6,10 +6,12 @@ from content.models import *
 from blooming.models import *
 #from django.contrib import messages
 import logging
-
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 
-def login(request):
+def login_view(request):
+    if request.user.is_authenticated():
+        return redirect('blooming:index')
     if request.method == 'GET':
         return render(request, 'blooming/login.html')
     elif request.method == 'POST':
@@ -19,9 +21,9 @@ def login(request):
         if user is not None:
             login(request, user)
             messages.success(request, 'Benvenut@ %s' % username)
-            return redirect('bloomind:index')
+            return redirect('blooming:index')
         else:
-            message.error(request, 'Accesso non effettuato. Ritenta o contatta il tuo insegnante.')
+            messages.error(request, 'Accesso non effettuato. Ritenta o contatta il tuo insegnante.')
             return redirect('blooming:index')
 
 def index(request):

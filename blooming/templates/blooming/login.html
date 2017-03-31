@@ -15,77 +15,77 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
     <style type="text/css">
-        body {
-          padding-top: 70px;
-          padding-bottom: 30px;
-        }
+      body {
+        padding-top: 70px;
+        padding-bottom: 30px;
+      }
 
-        .theme-dropdown .dropdown-menu {
-          position: static;
-          display: block;
-          margin-bottom: 20px;
-        }
+      .theme-dropdown .dropdown-menu {
+        position: static;
+        display: block;
+        margin-bottom: 20px;
+      }
 
-        .theme-showcase > p > .btn {
-          margin: 5px 0;
-        }
+      .theme-showcase > p > .btn {
+        margin: 5px 0;
+      }
 
-        .theme-showcase .navbar .container {
-          width: auto;
-        }
-        body {
-            background-color: #ddd;
-        }
-        .login {
-          margin-top: 25px !important;
-          padding: 5px;
-          width: auto;
-          min-width: 320px;
-          max-width: 400px;
-          height: 400px;
-          background-color: #f3f3f3;
-          margin:0 auto;
-          border-radius: 10px;
-          border: 1px solid ##c5c5c5;
-            text-align: center;
-        }
-        .login-inner {
-          margin:0 auto;
-          max-width: 380px;
-          width: auto;
-        }
-        .login>h4 {
-          font-size: 20px;
-          margin-left: 5px;
-          font-weight: 600;
-        }
-        .email {
-          margin-bottom: 5px;
-        }
-        .password {
-          margin-bottom: 5px;
-        }
-        .submit {
-          margin-top: 5px;
-        }
+      .theme-showcase .navbar .container {
+        width: auto;
+      }
+      body {
+          background-color: #ddd;
+      }
+      .login {
+        margin-top: 25px !important;
+        padding: 5px;
+        width: auto;
+        min-width: 320px;
+        max-width: 400px;
+        height: 400px;
+        background-color: #f3f3f3;
+        margin:0 auto;
+        border-radius: 10px;
+        border: 1px solid ##c5c5c5;
+          text-align: center;
+      }
+      .login-inner {
+        margin:0 auto;
+        max-width: 380px;
+        width: auto;
+      }
+      .login>h4 {
+        font-size: 20px;
+        margin-left: 5px;
+        font-weight: 600;
+      }
+      .email {
+        margin-bottom: 5px;
+      }
+      .password {
+        margin-bottom: 5px;
+      }
+      .submit {
+        margin-top: 5px;
+      }
+      .forgot {
+        min-width:50px;
+        width: 49%;
+        float: right;
+        margin-top: 20px;
+      }
+      .register {
+        width: 50%;
+        float: left;
+        margin-top: 20px;
+      }
+      @media (max-width: 320px) {
         .forgot {
-          min-width:50px;
-          width: 49%;
-          float: right;
-          margin-top: 20px;
+          font-size: 9px;
+          font-weight: 700;
+          padding: 8px;
         }
-        .register {
-          width: 50%;
-          float: left;
-          margin-top: 20px;
-        }
-        @media (max-width: 320px) {
-          .forgot {
-            font-size: 9px;
-            font-weight: 700;
-            padding: 8px;
-          }
-        }
+      }
 
     </style>
   </head>
@@ -110,9 +110,10 @@
   <div class="login">
     <h4>Accedi</h4>
       <hr>
-      <form class="login-inner">
-        <input type="text" class="form-control email" id="email-input" placeholder="Nome utente">
-        <input type="password" class="form-control password" id="password-input" placeholder="Parola chiave">
+      <form class="login-inner" method="post" action="{% url 'blooming:login' %}">
+        {% csrf_token %}
+        <input name='username' type="text" class="form-control email" id="email-input" placeholder="Nome utente">
+        <input name='password' type="password" class="form-control password" id="password-input" placeholder="Parola chiave">
         <input class="btn btn-block btn-lg btn-success submit" type="submit" value="Login">
       </form>
   </div>
