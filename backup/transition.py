@@ -5,13 +5,13 @@ tslink = {}
 serial = '000'
 onemore = lambda s: "{0:03}".format(int(s)+1)
 
-for topic in blooming.Topics.objects.all():
+for topic in blooming.Topic.objects.all():
     serial = onemore(serial)
     s = content.Serie(serial=serial, name=topic.text)
     s.save()
     tslink[topic.pk] = s
 
-for td in blooming.TopicsDependency.objects.all():
+for td in blooming.TopicDependency.objects.all():
     ss = content.SerieSerie(
         ante=tslink[td.ante.pk],
         post=tslink[td.post.pk],)
@@ -44,9 +44,9 @@ klink = {
 for oldtopic in blooming.Topic.objects.all():
     serial = '000'
     for q in blooming.Question.objects.filter(topic=oldtopic):
-        topic = Topic.objects.filter(serie=tslink[oldtopic.pk]).first()
+        topic = content.Topic.objects.filter(serie=tslink[oldtopic.pk]).first()
         serial = onemore(serial)
-        question = Question(   
+        question = content.Question(   
             serial = topic.serial + serial,
             text=q.text,
             topic=topic,
@@ -59,16 +59,16 @@ print("Question:done")
 for oldq in blooming.Question.objects.all():
     serial = '000'
     for oldo in blooming.Option.objects.filter(question=oldq):
-    question = qlink[oldq.pk]
-    others = content.Option.objects.filter(question=question, text=oldo.text)
-    if len(others)==0:
-        serial = onemore(serial)
-        o = content.Option(
-            serial = question.serial + serial,
-            question = question,
-            text = oldo.text,
-            accepted = True if oldo.status == 'a' else False,)
-        o.save()
+        question = qlink[oldq.pk]
+        others = content.Option.objects.filter(question=question, text=oldo.text)
+        if len(others)==0:
+            serial = onemore(serial)
+            o = content.Option(
+                serial = question.serial + serial,
+                question = question,
+                text = oldo.text,
+                accepted = True if oldo.status == 'a' else False,)
+            o.save()
 
 print("Option:done")
 

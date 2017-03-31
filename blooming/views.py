@@ -7,7 +7,23 @@ from blooming.models import *
 #from django.contrib import messages
 import logging
 
-@never_cache
+from django.contrib.auth import authenticate, login
+
+def login(request):
+    if request.method == 'GET':
+        return render(request, 'blooming/login.html')
+    elif request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'Benvenut@ %s' % username)
+            return redirect('bloomind:index')
+        else:
+            message.error(request, 'Accesso non effettuato. Ritenta o contatta il tuo insegnante.')
+            return redirect('blooming:index')
+
 def index(request):
   if request.user.is_authenticated():
     bloomer = Bloomer.objects.get(user=request.user)
@@ -22,9 +38,9 @@ def index(request):
         topic_status = 'far'
       info.add((t, score_value, topic_status))
     info = sorted(info, key=lambda x: 1 if x[2]=='ok' else (2 if x[2]=='todo' else 3))
-    return render(request, 'profile.html', {'info':info, 'bloomer':bloomer})
+    return render(request, 'blooming/profile.html', {'info':info, 'bloomer':bloomer})
   else:
-    return render(request, 'homepage.html')
+    return render(request, 'blooming/homepage.html')
 
 @never_cache
 @login_required

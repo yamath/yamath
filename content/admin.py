@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import *
+
+admin.site.register(Serie)
+admin.site.register(SerieSerie)
+admin.site.register(Topic)
+admin.site.register(Question)
+admin.site.register(Option)

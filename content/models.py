@@ -160,7 +160,7 @@ class Option(models.Model):
     accepted = models.BooleanField(default=True)
 
     def __str__(self):
-        return "(%s) %s%s" % (repr(self.question), self.text, ' rejected' if self.accepted else '')
+        return "(%s) %s%s" % (repr(self.question), self.text, ' rejected' if not self.accepted else '')
 
     def __repr__(self):
         return "O%s" % self.serial
