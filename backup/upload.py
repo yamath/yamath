@@ -1,8 +1,6 @@
 # import blooming.models as blooming
 # from django.contrib.auth.models import User
 # from blooming.models import *
-# from backend.models import *
-# from content.models import *
 # import backup.datadump as dump
 
 # for (username, password) in dump.users:
@@ -34,29 +32,21 @@
 # print("User: done")
 
 # tlink = {}
-# serial = '000'
-# onemore = lambda s: "{0:03}".format(int(s)+1)
 
 # for (tpk, text) in dump.topics:
-#     serial = onemore(serial)
-#     s = Serie(serial=serial, name=text)
-#     s.save()
-#     tlink[tpk]=s.pk
+#     t = Topic(text=text)
+#     t.save()
+#     tlink[tpk] = t.pk
 
 # for (a, p) in dump.topictopics:
-#     ss = SerieSerie(
-#         ante=Serie.objects.get(pk=tlink[a]),
-#         post=Serie.objects.get(pk=tlink[p])
-#     )
-#     ss.save()
-
-# for s in Serie.objects.all():
-#     t = Topic(serial=s.serial+'000', name="Transational topic", serie=s)
-#     t.save()
+#     td = TopicDependency(
+#         ante=Topic.objects.get(pk=tlink[a]),
+#         post=Topic.objects.get(pk=tlink[p]))
+#     td.save()
 
 # for (t, c) in dump.topicclassroom:
 #     tc = TopicClassroom(
-#         topic=Topic.objects.filter(serie=Serie.objects.get(pk=tlink[t])).first(),
+#         topic=Topic.objects.get(pk=tlink[t]),
 #         classroom=Classroom.objects.get(pk=clink[c]),
 #     )
 #     tc.save()
@@ -64,32 +54,10 @@
 # print("Topics: done")
 
 # qlink = {}
-# klink = {
-#     'ibool':'b',
-#     'pbool':'b',
-#     'imulti':'m',
-#     'pmulti':'m',
-#     'iopen':'o',
-#     'popen':'o',
-#     'delay':'t',
-#     'eval':'w',
-# }
 # for (qpk, text, tpk, something, kind) in dump.questions:
-#     topic = Topic.objects.filter(serie=Serie.objects.get(pk=tlink[t])).first()
-#     serial = '000'
-#     while True:
-#         serial = onemore(serial)
-#         try:
-#             q = Question(
-#                 serial = topic.serial + serial,
-#                 text=text,
-#                 topic=topic,
-#                 kind=klink[kind],)
-#             q.save()
-#         except:
-#             continue
-#         break
-#     qlink[qpk]=q.pk
+#     q = Question(text=text, topic=Topic.objects.get(pk=tlink[tpk]), kind=kind)
+#     q.save()
+#     qlink[qpk] = q.pk
 
 # print("Question:done")
 
@@ -100,16 +68,16 @@
 #     others = Option.objects.filter(question=question, text=text)
 #     if len(others)==0:
 #         o = Option(
-#             serial = question.serial + onemore(max( o.serial for o in Option.objects.filter(question=question) )),
 #             question = question,
 #             text = text,
-#             accepted = True if status == 'a' else False,)
+#             status=status)
 #         o.save()
 
 # print("Option: done")
 
 # for (username, tpk, value) in dump.scores:
-#     Score(
+#     s = Score(
 #         user=User.objects.get(username=username),
-#         topic=Topic.objects.get(serie=Serie.objects.get(pk=tlink[t])).first(),
-#         value=value).save()
+#         topic=Topic.objects.get(pk=tlink[t]),
+#         value=value)
+#     s.save()

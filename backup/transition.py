@@ -1,5 +1,7 @@
 import blooming.models as blooming
 import content.models as content
+import bloomerprofile.models as bloomerprofile
+from django.contrib.auth.models import User
 
 tslink = {}
 serial = '000'
@@ -18,15 +20,8 @@ for td in blooming.TopicDependency.objects.all():
     ss.save()
 
 for s in content.Serie.objects.all():
-    t = content.Topic(serial=s.serial+'000', name="Transational topic", serie=s)
+    t = content.Topic(serial=s.serial+'000', name="Transitional topic", serie=s)
     t.save()
-
-# for tc in blooming.TopicClassroom.objects.all():
-#     tc = TopicClassroom(
-#         topic=Topic.objects.filter(serie=Serie.objects.get(pk=tlink[t])).first(),
-#         classroom=Classroom.objects.get(pk=clink[c]),
-#     )
-#     tc.save()
 
 print("Topic: done")
 
@@ -70,10 +65,43 @@ for oldq in blooming.Question.objects.all():
                 accepted = True if oldo.status == 'a' else False,)
             o.save()
 
-print("Option:done")
+# print("Option:done")
+# for oldb in blooming.Bloomer.objects.all():
+#     b = bloomerprofile.Bloomer(username=oldb.username)
+#     b.save()
+#     b.password = oldb.user.password
+#     b.save()
+# print(bloomerprofile.Bloomer.objects.all())
 
-# for (username, tpk, value) in dump.scores:
-#     Score(
-#         user=User.objects.get(username=username),
-#         topic=Topic.objects.get(serie=Serie.objects.get(pk=tlink[t])).first(),
-#         value=value).save()
+for oldc in blooming.Classroom.objects.all():
+    c = bloomerprofile.Classroom(name=oldc.serial)
+    c.save()
+
+for oldcb in blooming.ClassroomBloomer.objects.all():
+    cb = bloomerprofile.ClassroomBloomer(
+        bloomer=bloomerprofile.Bloomer.objects.get(username=oldcb.bloomer.user.username),
+        classroom=bloomerprofile.Classroom.objects.get(name=oldcb.classroom.serial),)
+    cb.save()
+
+for oldtc in blooming.TopicClassroom.objects.all():
+    sc = bloomerprofile.SerieClassroom(
+        classroom=bloomerprofile.Classroom.objects.get(name=oldtc.classroom.serial),
+        serie=tslink[oldtc.topic.pk],)
+    sc.save()
+
+
+auxm = bloomerprofile.Mean(bloomer=bloomerprofile.Bloomer.objects.all().first(), topic=bloomerprofile.Topic.objects.all().first())
+vhdict = {}
+for h in ['XXXXX', 'AXXXX', 'AAXXX', 'AAAXX', 'AAAAX', 'AAAAA']:
+    auxm.history = h + 'XXXXX'
+    vhdict[ int(100*auxm.mean) ] = str(auxm.history)
+def value_to_history(value):
+    return vhdict[min( v for v in vhdict.keys() if v >= value )]
+
+for score in blooming.Score.objects.all():
+    m = bloomerprofile.Mean(
+        bloomer=bloomerprofile.Bloomer.objects.get(username=score.user.username),
+        topic=bloomerprofile.Topic.objects.get(name="Transitional topic", serie=tslink[score.topic.pk]),
+        history=value_to_history(score.value),)
+    m.save()
+    print(score.value, '→', m.mean)

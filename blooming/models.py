@@ -13,6 +13,7 @@ from content.models import Topic, Question, Option
 
 class Bloomer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    ###
     first_name = models.CharField(max_length=40, blank=True, null=True)
     last_name = models.CharField(max_length=40, blank=True, null=True)
     email = models.CharField(max_length=40, blank=True, null=True)
@@ -104,6 +105,7 @@ class ClassroomBloomer(models.Model):
 
 class Topic(models.Model):
     text = models.CharField(max_length=80)
+    ###
     bloom_index = models.IntegerField(  blank=True, null=True,
                                         choices=(   (1, 'remembering'),
                                                     (2, 'understanding'),
@@ -180,12 +182,13 @@ class TopicClassroom(models.Model):
         return "%s FOR %s" % (self.topic, self.classroom)
 
 class Option(models.Model):
-    user = models.ForeignKey(User, blank=True, null=True)
     question = models.ForeignKey('Question', related_name="option_question")
     text = models.TextField()
     status = models.CharField(max_length=1, choices=(   ('a', 'accepted'),
                                                         ('p', 'pending'),
                                                         ('r', 'rejected') ))
+    ###
+    user = models.ForeignKey(User, blank=True, null=True)
     submit_time = models.DateTimeField(auto_now_add=True)
     interval = models.DurationField(blank=True, null=True)
 
@@ -195,7 +198,6 @@ class Option(models.Model):
 class Question(models.Model):
     text = models.TextField()
     topic = models.ForeignKey('Topic', related_name='question_topic')
-    note = models.TextField(blank=True, null=True)
     kind = models.CharField(max_length=8, choices=( ('ibool', 'instant boolean'),
                                                     ('imulti', 'instant multiple'),
                                                     ('iopen', 'instant open'),
@@ -204,6 +206,8 @@ class Question(models.Model):
                                                     ('popen', 'paperwork open'),
                                                     ('delay', 'delayed'),
                                                     ('eval', 'evaluation')))
+    ###
+    note = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return "(T%s %s %s) %s" % (self.topic.pk, self.kind, self.pk, self.text[:80])

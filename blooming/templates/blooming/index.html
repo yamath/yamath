@@ -34,6 +34,13 @@
           width: auto;
         }
     </style>
+    <script type="text/javascript">
+      alert("active");
+      $.get("{% url 'bloomerprofile:ajax' %}",
+            "{'request':'done_series', 'username':'{{ bloomer.username }}'}",
+            function (data) { alert("Load performed" + data); },
+            'json',);
+    </script>
   </head>
 
   <body>
@@ -64,7 +71,7 @@
         <div id="navbar0" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li>
-              <form class="navbar-form form-inline" method="get" action="#" autocomplete="off">
+              <form class="navbar-form form-inline" method="get" action="{% url 'blooming:profile' %}" autocomplete="off">
                 {% csrf_token %}
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
                   Profilo <span class="glyphicon glyphicon-user"></span>
@@ -122,37 +129,12 @@
     
     <div class="container theme-showcase" role="main">
       <div class="jumbotron">
-        <h1>Questa pagina non è ancora pronta</h1>
+        <h1>Index non è ancora pronta</h1>
       </div>
 
-      <!-- <div class="page-header">
-        <h1>Dati</h1>
-      </div>
-      <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
-          <table class="table">
-            <tbody>
-              <tr>
-                <td>Nome</td>
-                <td id="profile_firstname">{{ request.user.first_name }}</td>
-                <td><span class="glyphicon glyphicon-pencil"></span></td>
-              </tr>
-              <tr>
-                <td>Cognome</td>
-                <td id="profile_lastname">{{ request.user.last_name }}</td>
-                <td><span class="glyphicon glyphicon-pencil"></span></td>
-              </tr>
-              <tr>
-                <td>Posta elettronica</td>
-                <td id="profile_email">{{ request.user.email }}</td>
-                <td><span class="glyphicon glyphicon-pencil"></span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="col-md-2"></div>
-      </div> -->
+      <p id='done_series'></p>
+      <p id='todo_series'></p>
+      <p id='late_series'></p>
     </div>
 
 

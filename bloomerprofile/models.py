@@ -15,7 +15,7 @@ class Bloomer(User):
         proxy = True
 
     def __repr__(self):
-        return self.user.username        
+        return self.username        
 
     def add_classroom(self, c):
         if isinstance(c, Classroom):
@@ -115,7 +115,7 @@ class Bloomer(User):
     classrooms = property(get_classrooms)
     series = property(get_series)
     topics = property(get_topics)
-    mean = property(mean)
+    mean = property(get_mean)
 
 
 class Classroom(models.Model):
@@ -162,7 +162,7 @@ class Classroom(models.Model):
         if serie in self.series:
             SerieClassroom.objects.get(classroom=self, serie=serie).delete()
 
-    bloomers = property(_get_bloomers)
+    bloomers = property(get_bloomers)
     series = property(get_series)
 
 
@@ -208,9 +208,12 @@ class Mean(models.Model):
         self.forget = max(0, self.forget-1)
 
     def get_mean(self):
-        return 0.9**self.forget * (5*(1 if self.history[0] == 'A' else 0)+
-                3*(1 if self.history[1] == 'A' or self.history[0] == 'X' else 0)+
-                1*(1 if self.history[2] == 'A' or self.history[1] == 'X' else 0))/9
+        return 0.9**self.forget * (
+                10*(1 if self.history[0] == 'A' else 0)+
+                 5*(1 if self.history[1] == 'A' or self.history[0] == 'X' else 0)+
+                 2*(1 if self.history[2] == 'A' or self.history[1] == 'X' else 0)+
+                 1*(1 if self.history[3] == 'A' or self.history[2] == 'X' else 0)
+                )/18
 
     mean = property(get_mean)
 

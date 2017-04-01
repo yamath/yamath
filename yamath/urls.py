@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^login/$', login_view),
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^admin/', admin.site.urls),
-    #url(r'^yapp/', include('yapp.urls')),
+    url(r'^bloomerprofile/', include('bloomerprofile.urls', namespace='bloomerprofile')),
     url(r'^backend/', include('backend.urls', namespace='backend')),
     url(r'^blooming/', include('blooming.urls', namespace='blooming')),
 ]
