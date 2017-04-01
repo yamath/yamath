@@ -2,6 +2,7 @@ import blooming.models as blooming
 import content.models as content
 import bloomerprofile.models as bloomerprofile
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 tslink = {}
 serial = '000'
@@ -103,5 +104,12 @@ for score in blooming.Score.objects.all():
         bloomer=bloomerprofile.Bloomer.objects.get(username=score.user.username),
         topic=bloomerprofile.Topic.objects.get(name="Transitional topic", serie=tslink[score.topic.pk]),
         history=value_to_history(score.value),)
-    m.save()
-    print(score.value, '→', m.mean)
+    try:
+        _m = bloomerprofile.Mean.objects.get(
+            bloomer=bloomerprofile.Bloomer.objects.get(username=score.user.username),
+            topic=bloomerprofile.Topic.objects.get(name="Transitional topic", serie=tslink[score.topic.pk]),)
+        if m.mean > _m.mean:
+            _m.history = m.history
+            _m.save()
+    except (ObjectDoesNotExist, MultipleObjectsReturned):
+        m.save()

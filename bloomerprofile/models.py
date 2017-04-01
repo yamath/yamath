@@ -71,9 +71,6 @@ class Bloomer(User):
     def get_classrooms(self):
         return [ cb.classroom for cb in ClassroomBloomer.objects.filter(bloomer=self) ]
 
-    def get_series(self):
-        return list({ serie for serie in classroom.series for classroom in self.classrooms })
-
     def get_classrooms_of_serie(self, s):
         if isinstance(s, Serie):
             serie = s
@@ -111,6 +108,26 @@ class Bloomer(User):
 
     def get_topics(self):
         return list({ topic for topic in serie.topics for serie in self.series })
+
+    def get_series(self, status=None):
+        if status is None:
+            return list({ serie for classroom in self.classrooms  for serie in classroom.series})
+        else:
+            return list({ serie for classroom in self.classrooms for serie in classroom.series if self.get_status_of_serie(serie)==status })
+
+    def get_status_of_serie(self, s):
+        print("Debug: get_status_of_serie", s, "antes:", s.antes)
+        if isinstance(s, Serie):
+            serie = s
+        else:
+            serie = get_or_none(Serie, serial=s)
+        if self.get_mean_of_serie(serie) > 0.9:
+            return 'done'
+        elif all(self.get_status_of_serie(_s)=='done' for _s in serie.antes):
+            return 'todo'
+        else:
+            return 'late'
+
 
     classrooms = property(get_classrooms)
     series = property(get_series)

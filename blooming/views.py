@@ -9,7 +9,10 @@ from bloomerprofile.models import *
 import logging
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import ensure_csrf_cookie
 
+@never_cache
+@ensure_csrf_cookie
 def index(request):
   if request.user.is_authenticated():
     bloomer = Bloomer.objects.get(username=request.user.username)

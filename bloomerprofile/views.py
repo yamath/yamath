@@ -4,13 +4,23 @@
 # from random import choice
 # from content.models import *
 # from blooming.models import *
+import bloomerprofile.models as bloomingprofile
 # from django.contrib import messages
 # import logging
 # from django.contrib import messages
 # from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
 
 def ajax(request):
-    return "Ajax return"
+    print("BP AJAX:", request.POST)
+    bloomer = bloomingprofile.Bloomer.objects.get(username=request.POST['username'])
+    datadict = {}
+    req_list = request.POST['request'].split()
+    if 'done_series' in req_list:
+        datadict['done_series'] = bloomer.get_series('done')
+        print("Debug:", bloomer.get_series('done'))
+    datadict['debug_message'] = "todo piola"
+    return JsonResponse(datadict)
     # if request.user.is_authenticated():
     #     return redirect('blooming:index')
     # if request.method == 'GET':

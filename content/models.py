@@ -54,7 +54,7 @@ class Serie(models.Model):
             SerieSerie.objects.get(ante=self, post=serie).delete()
 
     def get_antes(self):
-        return list({ ss.ante for ss in SerieSerie.objects.filter(ante=self) })
+        return list({ ss.ante for ss in SerieSerie.objects.filter(post=self) })
 
     def get_posts(self):
         return list({ ss.post for ss in SerieSerie.objects.filter(ante=self) })
