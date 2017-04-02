@@ -47,16 +47,16 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button> -->
-          <button type="button" class="navbar-toggle">
+          <button type="button" class="navbar-toggle" onClick="window.location.assign('{% url 'logout' %}');">
             <span class="glyphicon glyphicon-log-out" style="color:#ddd;"></span>
           </button>
           <button type="button" class="navbar-toggle">
             <span class="glyphicon glyphicon-envelope" style="color:#ddd;"></span>
           </button>
-          <button type="button" class="navbar-toggle">
+          <button type="button" class="navbar-toggle" onClick="window.location.assign('{% url 'blooming:index' %}');">
             <span class="glyphicon glyphicon-book" style="color:#ddd;"></span>
           </button>
-          <button type="button" class="navbar-toggle">
+          <button type="button" class="navbar-toggle" onClick="window.location.assign('{% url 'blooming:profile' %}');">
             <span class="glyphicon glyphicon-user" style="color:#ddd;"></span>
           </button>
           <a class="navbar-brand" href="/">Yamath</a>

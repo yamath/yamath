@@ -20,6 +20,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({extensions: ["tex2jax.js"], jax: ["input/TeX", "output/HTML-CSS"], tex2jax: {inlineMath: [ ['$','$'], ["\\(","\\)"] ], displayMath: [ ['$$','$$'], ["\\[","\\]"] ], processEscapes: true }, "HTML-CSS": { availableFonts: ["TeX"] } }); </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     <style type="text/css">
         body {
@@ -41,6 +44,7 @@
           width: auto;
         }
     </style>
+    <script type="text/javascript" src="{% static 'js/personal.js' %}"></script>
     <script type="text/javascript">
       // using jQuery
       function getCookie(name) {
@@ -70,12 +74,14 @@
               }
           }
       });
-      $.post("{% url 'bloomerprofile:ajax' %}",
-            {'request':'done_series', 'username':'{{ bloomer.username }}'},
-            function (data) {
-              $('#done_series').html(data['done_series']);
-              alert("Load performed " + data['debug_message']); },
-            'json');
+      // ajaxPost("doneSeries=doneSeries(bloomer)", '{{ bloomer.username }}');
+      // let doneSeries = localStorage['doneSeries'];
+      // for(var k in doneSeries) {
+      //   $('#done_series').append(doneSeries[k]);
+      // }
+      loadDoneSeries('{{ bloomer.username}}');
+      loadTodoSeries('{{ bloomer.username}}');
+      loadLateSeries('{{ bloomer.username}}');
     </script>
   </head>
 
@@ -90,16 +96,16 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button> -->
-          <button type="button" class="navbar-toggle">
+          <button type="button" class="navbar-toggle"  onClick="window.location.assign('{% url 'logout' %}');">
             <span class="glyphicon glyphicon-log-out" style="color:#ddd;"></span>
           </button>
           <button type="button" class="navbar-toggle">
             <span class="glyphicon glyphicon-envelope" style="color:#ddd;"></span>
           </button>
-          <button type="button" class="navbar-toggle">
+          <button type="button" class="navbar-toggle" onClick="window.location.assign('{% url 'blooming:index' %}');">
             <span class="glyphicon glyphicon-book" style="color:#ddd;"></span>
           </button>
-          <button type="button" class="navbar-toggle">
+          <button type="button" class="navbar-toggle" onClick="window.location.assign('{% url 'blooming:profile' %}');">
             <span class="glyphicon glyphicon-user" style="color:#ddd;"></span>
           </button>
           <a class="navbar-brand" href="/">Yamath</a>
@@ -123,7 +129,7 @@
               </form>
             </li>
             <li>
-              <form class="navbar-form form-inline" method="post" action="{% url 'backend:claim' %}" autocomplete="off">
+              <form class="navbar-form form-inline" method="post" action="#" autocomplete="off">
                 {% csrf_token %}
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
                   Messaggio <span class="glyphicon glyphicon-envelope"></span>
@@ -147,30 +153,45 @@
       </div>
     </nav>
 
-    <div class="container">
+    <div class="container" id="messageDisplay">
       {% if messages %}
-      <div class="row">
+      <div class="row" id="messageDisplayDjango">
         <div class="col-xs-12">
           {% for message in messages %}
           {% if message.tags == 'error' %}
-          <div class="alert alert-danger">{{ message }}</div>
+          <p class="alert alert-danger">{{ message }}</p>
           {% elif message.tags == 'success' %}
-          <div class="alert alert-success">{{ message }}</p>
+          <p class="alert alert-success">{{ message }}</p>
           {% endif %}
           {% endfor %}
         </div>
       </div>
       {% endif %}
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="alert alert-danger" id="messageDisplayError" style="display: none;"></div>
+          <div class="alert alert-success" id="messageDisplaySuccess" style="display: none;"></div>
+        </div>
+      </div>
     </div>
     
     <div class="container theme-showcase" role="main">
-      <div class="jumbotron">
-        <h1>Index non è ancora pronta</h1>
+      <div id="seriesIndex">
+        <h3>Argomenti completati</h3>
+        <ol id='doneSeries'></ol>
+        <h3>Argomenti da affrontare</h3>
+        <ol id='todoSeries'></ol>
+        <h3>Argomenti per il futuro</h3>
+        <ol id='lateSeries'></ol>
       </div>
-
-      <p id='done_series'></p>
-      <p id='todo_series'></p>
-      <p id='late_series'></p>
+      <div id="questionDisplay">
+        <div class="container">
+          <div class="row" id='questionDisplayText'>
+          </div>
+          <div class="row" id='questionDisplayForm'>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
 </html>

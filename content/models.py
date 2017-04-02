@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from random import sample
+from random import sample, shuffle
 
 def get_or_none(_class, **kwargs):
     try:
@@ -133,12 +133,11 @@ class Question(models.Model):
 
     def get_uptofive(self):
         correct_option = Option.objects.filter(question=self, accepted=True).first()
-        rejected_options =  Option.objects.filter(question=self, accepted=False)[0:4]
-        shuffle(corre)
-        l = l[0:4]
-        l.append(self.get_first_correct_option())
-        shuffle(l)
-        return l
+        options =  list(Option.objects.filter(question=self, accepted=False)[0:4])
+        shuffle(options)
+        options.append(correct_option)
+        shuffle(options)
+        return options
 
     def chk_answer(self, text):
         os = Option.objects.filter(question=self, text=text)

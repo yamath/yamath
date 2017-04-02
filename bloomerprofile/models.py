@@ -10,6 +10,20 @@ def get_or_none(_class, **kwargs):
     except ObjectDoesNotExist:
         return None
 
+# def complete_get(_class, arg):
+#     if isinstance(arg, _class):
+#         return arg
+#     elif isinstance(arg, dict):
+#         if 'id' in arg.keys():
+#             return get_or_none(_class, pk=arg['id'])
+#         else:
+#             raise ObjectDoesNotExist
+#     elif isinstance(arg, (str, int)):
+#         return get_or_none(_class, serial=arg) or get_or_none(_class, name=arg) or get_or_none(_class, pk=arg)
+#     else:
+#         raise ObjectDoesNotExist
+
+
 class Bloomer(User):
     class Meta:
         proxy = True
@@ -41,10 +55,12 @@ class Bloomer(User):
             m.add_unanswered()
 
     def chk_answer(self, q, text):
+        print("chk_answer", q.serial, text)
         if isinstance(q, Question):
             question = q
         else:
             question = get_or_none(Question, serial=q) or get_or_none(Question, pk=q)
+        print("mean ante", self.get_mean_of_topic(question.topic))
         if question.chk_answer(text):
             try:
                 Mean.objects.get(bloomer=self, topic=question.topic).add_accepted()
@@ -52,13 +68,17 @@ class Bloomer(User):
                 m = Mean(bloomer=self, topic=question.topic)
                 m.save()
                 m.add_accepted()
+            print("mean post", self.get_mean_of_topic(question.topic))
+            return True
         else:
             try:
                 Mean.objects.get(bloomer=self, topic=question.topic).add_rejected()
             except ObjectDoesNotExist:
                 m = Mean(bloomer=self, topic=question.topic)
                 m.save()
-                m.add_rejected()  
+                m.add_rejected()
+            print("mean post", self.get_mean_of_topic(question.topic))
+            return False
 
     def del_classroom(self, c):
         if isinstance(c, Classroom):
@@ -109,24 +129,8 @@ class Bloomer(User):
     def get_topics(self):
         return list({ topic for topic in serie.topics for serie in self.series })
 
-    def get_series(self, status=None):
-        if status is None:
-            return list({ serie for classroom in self.classrooms  for serie in classroom.series})
-        else:
-            return list({ serie for classroom in self.classrooms for serie in classroom.series if self.get_status_of_serie(serie)==status })
-
-    def get_status_of_serie(self, s):
-        print("Debug: get_status_of_serie", s, "antes:", s.antes)
-        if isinstance(s, Serie):
-            serie = s
-        else:
-            serie = get_or_none(Serie, serial=s)
-        if self.get_mean_of_serie(serie) > 0.9:
-            return 'done'
-        elif all(self.get_status_of_serie(_s)=='done' for _s in serie.antes):
-            return 'todo'
-        else:
-            return 'late'
+    def get_series(self):
+        return list({ serie for classroom in self.classrooms  for serie in classroom.series})
 
 
     classrooms = property(get_classrooms)
@@ -214,15 +218,19 @@ class Mean(models.Model):
 
     def add_forget(self):
         self.forget += 1
+        self.save()
 
     def add_rejected(self):
         self.history = 'R' + self.history[:9]
+        self.save()
 
     def add_unanswered(self):
         self.history = 'X' + self.history[:9]
+        self.save()
 
     def del_forget(self):
         self.forget = max(0, self.forget-1)
+        self.save()
 
     def get_mean(self):
         return 0.9**self.forget * (
