@@ -1,4 +1,1 @@
-yamath/settings.py
 *.pyc
-*/migrations
-local

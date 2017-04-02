@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from random import shuffle
-from content.models import Topic, Question, Option
+#from content.models import Topic, Question, Option
 #def validate_user_is_professor(user):
 #    try:
 #        if isinstance(user, str):
