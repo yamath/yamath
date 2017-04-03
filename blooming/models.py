@@ -2,18 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from random import shuffle
-#from content.models import Topic, Question, Option
-#def validate_user_is_professor(user):
-#    try:
-#        if isinstance(user, str):
-#            user = User.objects.get(username=user)
-#        assert UserInfo.objects.get(user=user).professor
-#    except:
-#        raise ValidationError
+
 
 class Bloomer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    ###
     first_name = models.CharField(max_length=40, blank=True, null=True)
     last_name = models.CharField(max_length=40, blank=True, null=True)
     email = models.CharField(max_length=40, blank=True, null=True)
@@ -85,13 +77,6 @@ class Classroom(models.Model):
     def delete_topic(self, topic):
         if topic in self.topics:
             TopicClassroom.objects.get(topic=topic, classroom=self).delete()
-    #def update_bloomers(self, bloomers_username_list):
-    #    bloomers_to_add = (set(bloomers_username_list) - set([ b.user.username for b in self.bloomers ])) & set([ b.user.username for b in Bloomer.objects.all() ])
-    #    bloomers_to_delete = set([ b.user.username for b in self.bloomers ]) - set(bloomers_username_list)
-    #    for username in bloomers_to_add:
-    #        ClassroomBloomer(bloomer=Bloomer.objects.get(user=User.objects.get(username=username)), classroom=self).save()
-    #    for username in bloomers_to_delete:
-    #        ClassroomBloomer.objects.get(bloomer=Bloomer.objects.get(user=User.objects.get(username=username)), classroom=self).delete()
 
     bloomers = property(_get_bloomers)
     topics = property(_get_topics)
@@ -105,7 +90,6 @@ class ClassroomBloomer(models.Model):
 
 class Topic(models.Model):
     text = models.CharField(max_length=80)
-    ###
     bloom_index = models.IntegerField(  blank=True, null=True,
                                         choices=(   (1, 'remembering'),
                                                     (2, 'understanding'),
@@ -187,7 +171,6 @@ class Option(models.Model):
     status = models.CharField(max_length=1, choices=(   ('a', 'accepted'),
                                                         ('p', 'pending'),
                                                         ('r', 'rejected') ))
-    ###
     user = models.ForeignKey(User, blank=True, null=True)
     submit_time = models.DateTimeField(auto_now_add=True)
     interval = models.DurationField(blank=True, null=True)
@@ -206,7 +189,6 @@ class Question(models.Model):
                                                     ('popen', 'paperwork open'),
                                                     ('delay', 'delayed'),
                                                     ('eval', 'evaluation')))
-    ###
     note = models.TextField(blank=True, null=True)
 
     def __str__(self):

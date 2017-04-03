@@ -9,20 +9,7 @@ def get_or_none(_class, **kwargs):
         return _class.objects.get(**kwargs)
     except ObjectDoesNotExist:
         return None
-
-# def complete_get(_class, arg):
-#     if isinstance(arg, _class):
-#         return arg
-#     elif isinstance(arg, dict):
-#         if 'id' in arg.keys():
-#             return get_or_none(_class, pk=arg['id'])
-#         else:
-#             raise ObjectDoesNotExist
-#     elif isinstance(arg, (str, int)):
-#         return get_or_none(_class, serial=arg) or get_or_none(_class, name=arg) or get_or_none(_class, pk=arg)
-#     else:
-#         raise ObjectDoesNotExist
-
+    
 
 class Bloomer(User):
     class Meta:
@@ -242,6 +229,7 @@ class Mean(models.Model):
 
     mean = property(get_mean)
 
+    
 class Envelope(models.Model):
     sender = models.ForeignKey(Bloomer, related_name="envelope_sender")
     receiver = models.ForeignKey(Bloomer, related_name="envelope_receiver")
@@ -253,5 +241,3 @@ class Envelope(models.Model):
 
     def __str__(self):
         return "from %s to %s" % (self.sender, self.receiver)
-
-

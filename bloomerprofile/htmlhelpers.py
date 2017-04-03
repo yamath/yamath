@@ -3,7 +3,6 @@ from bloomerprofile.models import *
 from random import choice
 
 def get_status_of_serie(bloomer, s):
-    #print("Debug: get_status_of_serie", s, "antes:", s.antes)
     if isinstance(s, Serie):
         serie = s
     else:
