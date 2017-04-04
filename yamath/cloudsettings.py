@@ -63,14 +63,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'yamath.wsgi.application'
 
-#MASTER DATABASE
-#DATABASES = {'default': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'yamath$default', 'USER': 'yamath', 'PASSWORD': 'coitanra', 'HOST': 'yamath.mysql.pythonanywhere-services.com'}, 'TEST': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'yamath$test_default', 'USER': 'yamath', 'PASSWORD': 'coitanra', 'HOST': 'yamath.mysql.pythonanywhere-services.com'}}
-
-#LEFT DATABASE
 DATABASES = {'default': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'yamath$left', 'USER': 'yamath', 'PASSWORD': 'coitanra', 'HOST': 'yamath.mysql.pythonanywhere-services.com'}, 'TEST': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'yamath$test_default', 'USER': 'yamath', 'PASSWORD': 'coitanra', 'HOST': 'yamath.mysql.pythonanywhere-services.com'}}
-
-#LOCAL DATABASE
-#DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': 'local', } }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
