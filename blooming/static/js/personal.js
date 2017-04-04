@@ -1,67 +1,73 @@
+/*global $*/
+/*global MathJax*/
 function mathjaxTypeset() {
     'use strict';
-    MathJax.Hub.Queue(['Typeset',MathJax.Hub]);
+    MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
 }
 function loadDoneSeries(bloomerUsername) {
     'use strict';
     $('#doneSeries').hide();
     $.post(
         "/bloomerprofile/ajax/loadDoneSeries/",
-        {'username':bloomerUsername},
-        function(data){
+        {'username': bloomerUsername},
+        function (data) {
             $('#doneSeries').html(data);
             $('#doneSeries').show();
         }
     );
 }
 function loadTodoSeries(bloomerUsername) {
+    'use strict';
     $('#todoSeries').hide();
     $.post(
         "/bloomerprofile/ajax/loadTodoSeries/",
-        {'username':bloomerUsername},
-        function(data){
+        {'username': bloomerUsername},
+        function (data) {
             $('#todoSeries').html(data);
             $('#todoSeries').show();
         }
     );
 }
 function loadLateSeries(bloomerUsername) {
+    'use strict';
     $('#lateSeries').hide();
     $.post(
         "/bloomerprofile/ajax/loadLateSeries/",
-        {'username':bloomerUsername},
-        function(data){
+        {'username': bloomerUsername},
+        function (data) {
             $('#lateSeries').html(data);
             $('#lateSeries').show();
         }
     );
 }
 function loadQuestionText(bloomerUsername, questionSerial) {
+    'use strict';
     $.post(
         "/bloomerprofile/ajax/loadQuestionText/",
-        {'username':bloomerUsername, 'questionSerial':questionSerial},
-        function(data){
+        {'username': bloomerUsername, 'questionSerial': questionSerial},
+        function (data) {
             $('#questionDisplayText').html(data);
         }
     );
 }
 function loadQuestionForm(bloomerUsername, questionSerial) {
+    'use strict';
     $.post(
         "/bloomerprofile/ajax/loadQuestionForm/",
-        {'username':bloomerUsername, 'questionSerial':questionSerial},
-        function(data){
+        {'username': bloomerUsername, 'questionSerial': questionSerial},
+        function (data) {
             $('#questionDisplayForm').html(data);
-            $('#questionDisplayFormInput').keypress(function(event) {
+            $('#questionDisplayFormInput').keypress(function (event) {
                 var keycode = event.keyCode || event.which;
-                if(keycode == '13') {
-                    let answer = $('#questionDisplayFormInput').val();
-                    submitAnswer(bloomerUsername, questionSerial, answer);    
+                if (keycode === '13') {
+                    submitAnswer(bloomerUsername, questionSerial, $('#questionDisplayFormInput').val(););    
                 }
             });
         }
     );
 }
 function selectSerie(bloomerUsername, serieSerial) {
+    'use strict';
     $(window).bind('beforeunload', function(){
         return 'Abbandonando la pagina in questo momento la domanda risulterà senza risposta. Desideri abbandonare?';
     });
