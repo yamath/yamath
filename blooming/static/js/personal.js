@@ -60,7 +60,7 @@ function loadQuestionForm(bloomerUsername, questionSerial) {
             $('#questionDisplayFormInput').keypress(function (event) {
                 var keycode = event.keyCode || event.which;
                 if (keycode === '13') {
-                    submitAnswer(bloomerUsername, questionSerial, $('#questionDisplayFormInput').val(););    
+                    submitAnswer(bloomerUsername, questionSerial, $('#questionDisplayFormInput').val());    
                 }
             });
         }
