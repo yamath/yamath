@@ -67,7 +67,6 @@ function loadQuestionForm(bloomerUsername, questionSerial) {
     );
 }
 function selectSerie(bloomerUsername, serieSerial) {
-    'use strict';
     $(window).bind('beforeunload', function(){
         return 'Abbandonando la pagina in questo momento la domanda risulterà senza risposta. Desideri abbandonare?';
     });
