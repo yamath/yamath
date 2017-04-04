@@ -1,11 +1,9 @@
 /*global $*/
 /*global MathJax*/
 function mathjaxTypeset() {
-    'use strict';
     MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
 }
 function loadDoneSeries(bloomerUsername) {
-    'use strict';
     $('#doneSeries').hide();
     $.post(
         "/bloomerprofile/ajax/loadDoneSeries/",
@@ -17,7 +15,6 @@ function loadDoneSeries(bloomerUsername) {
     );
 }
 function loadTodoSeries(bloomerUsername) {
-    'use strict';
     $('#todoSeries').hide();
     $.post(
         "/bloomerprofile/ajax/loadTodoSeries/",
@@ -29,8 +26,6 @@ function loadTodoSeries(bloomerUsername) {
     );
 }
 function loadLateSeries(bloomerUsername) {
-    'use strict';
-    $('#lateSeries').hide();
     $.post(
         "/bloomerprofile/ajax/loadLateSeries/",
         {'username': bloomerUsername},
@@ -41,7 +36,6 @@ function loadLateSeries(bloomerUsername) {
     );
 }
 function loadQuestionText(bloomerUsername, questionSerial) {
-    'use strict';
     $.post(
         "/bloomerprofile/ajax/loadQuestionText/",
         {'username': bloomerUsername, 'questionSerial': questionSerial},
@@ -51,7 +45,6 @@ function loadQuestionText(bloomerUsername, questionSerial) {
     );
 }
 function loadQuestionForm(bloomerUsername, questionSerial) {
-    'use strict';
     $.post(
         "/bloomerprofile/ajax/loadQuestionForm/",
         {'username': bloomerUsername, 'questionSerial': questionSerial},
