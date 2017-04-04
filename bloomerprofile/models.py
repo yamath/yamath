@@ -238,6 +238,7 @@ class Envelope(models.Model):
     question = models.ForeignKey(Question, blank=True, null=True, related_name="envelope_question")
     option = models.ForeignKey(Option, blank=True, null=True, related_name="envelope_option")
     text = models.TextField(blank=True, null=True)
+    submit_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return "from %s to %s" % (self.sender, self.receiver)

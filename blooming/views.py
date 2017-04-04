@@ -29,7 +29,8 @@ def login_view(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, 'Benvenut@ %s' % username)
+            #messages.success(request, 'Benvenut@ %s' % username)
+            messages.success(request, "C'è un nuovo bottone «RiFormula», serve per sistemare le formule se vengono fuori formattate male.")
             return redirect('blooming:index')
         else:
             messages.error(request, 'Accesso non effettuato. Ritenta o contatta il tuo insegnante.')
