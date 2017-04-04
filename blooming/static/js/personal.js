@@ -1,4 +1,9 @@
+function mathjaxTypeset() {
+    'use strict';
+    MathJax.Hub.Queue(['Typeset',MathJax.Hub]);
+}
 function loadDoneSeries(bloomerUsername) {
+    'use strict';
     $('#doneSeries').hide();
     $.post(
         "/bloomerprofile/ajax/loadDoneSeries/",

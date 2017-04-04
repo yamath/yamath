@@ -66,7 +66,7 @@ WSGI_APPLICATION = 'yamath.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'local',
+        'NAME': '../local.sqlite3.db',
     }
 }
 
