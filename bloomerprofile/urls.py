@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^ajax/loadTodoSeries/$', views.loadTodoSeries, name='loadTodoSeries'),
     url(r'^ajax/submitAnswer/$', views.submitAnswer, name='submitAnswer'),
     url(r'^ajax/unansweredQuestion/$', views.unansweredQuestion, name='unansweredQuestion'),
+    url(r'^ajax/sendEnvelope/$', views.sendEnvelope, name='sendEnvelope'),
 ]

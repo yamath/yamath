@@ -1,5 +1,18 @@
 /*global $*/
 /*global MathJax*/
+function sendEnvelope() {
+    let senderUsername = localStorage['bloomerUsername'];
+    let receiverUsername = 'admin';
+    /*serie, topic, question, option*/
+    let text = prompt("Puoi inserire un messaggio per descrivere il problema:");
+    $.post(
+        "/bloomerprofile/ajax/sendEnvelope/",
+        {'senderUsername': senderUsername, 'receiverUsername':receiverUsername, 'text':text},
+        function (data) {
+            alert("Messaggio inviato. Grazie per la collaborazione.");
+        }
+    );
+}
 function mathjaxTypeset() {
     MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
 }

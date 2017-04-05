@@ -8,6 +8,21 @@ from content.models import *
 from .models import *
 import bloomerprofile.htmlhelpers as html
 
+def requestPostSafeGet(request, key, default=None):
+    try:
+        return request.POST[key]
+    except Exception as e:
+        print("requestPostGetOrNone({}, {}) \n {}".format(request, key, e))
+        return default
+    
+def sendEnvelope(request):
+    sender = Bloomer.objects.get(username=request.POST['senderUsername'])
+    receiver = Bloomer.objects.get(username=request.POST['receiverUsername'])
+    text = requestPostSafeGet(request, 'text', '')
+    # serie topic question option
+    Envelope.objects.create(sender=sender, receiver=receiver, text=text)
+    return HttpResponse("false")
+
 def loadDoneSeries(request):
     bloomer = Bloomer.objects.get(username=request.POST['username'])
     return HttpResponse(html.loadDoneSeries(bloomer))
