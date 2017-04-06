@@ -47,23 +47,23 @@ class Bloomer(User):
             question = q
         else:
             question = get_or_none(Question, serial=q) or get_or_none(Question, pk=q)
-        print("mean ante", self.get_mean_of_topic(question.topic))
+        #print("mean ante", self.get_mean_of_topic(question.topic))
         if question.chk_answer(text):
             try:
-                Mean.objects.get(bloomer=self, topic=question.topic).add_accepted()
+                Mean.objects.get(bloomer=self, topic=question.topic).last_unanswered_to_accepted()
             except ObjectDoesNotExist:
                 m = Mean(bloomer=self, topic=question.topic)
                 m.save()
                 m.last_unanswered_to_accepted()
-            print("mean post", self.get_mean_of_topic(question.topic))
+            #print("mean post", self.get_mean_of_topic(question.topic))
             return True
         else:
             try:
-                Mean.objects.get(bloomer=self, topic=question.topic).add_rejected()
+                Mean.objects.get(bloomer=self, topic=question.topic).last_unanswered_to_rejected()
             except ObjectDoesNotExist:
                 m = Mean(bloomer=self, topic=question.topic)
                 m.save()
-                m.add_rejected()
+                m.last_unanswered_to_rejected()
             print("mean post", self.get_mean_of_topic(question.topic))
             return False
 
@@ -231,9 +231,18 @@ class Mean(models.Model):
                 )/18
     
     def last_unanswered_to_accepted(self):
+        print("cante", self.history)
         if self.history[0] == 'X':
-            self.history = 'A' + self.hisroty[1:]
+            self.history = 'A' + self.history[1:]
         self.save()
+        print("cpost", self.history)
+    
+    def last_unanswered_to_rejected(self):
+        print("cante", self.history)
+        if self.history[0] == 'X':
+            self.history = 'R' + self.history[1:]
+        self.save()
+        print("cpost", self.history)
 
     mean = property(get_mean)
 

@@ -54,6 +54,6 @@ def loadQuestionForm(bloomer, question):
                     bloomer.username, question.serial, option.text)
                  for option in question.get_uptofive() ]))
     if question.kind == 'o':
-        return "<div class='col-xs-12'><input id='questionDisplayFormInput' type='text' name='answer' /><button onClick=\"submitAnswer('{}', '{}', {})\">Invia</button></form></div>".format(
+        return "<div class='col-xs-12'><input id='questionDisplayFormInput' type='text' name='answer' autocomplete='off'/><button onClick=\"submitAnswer('{}', '{}', {})\">Invia</button></form></div>".format(
             bloomer.username, question.serial, "$('#questionDisplayFormInput').val()") #
     return ""
