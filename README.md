@@ -1,9 +1,10 @@
 # Da fare
- - Controllare che funzione 'ununswered'
- - Admin backends
- - form enter submit
  - make tools out of temp
- - choose from the worst topic
+ - Admin backends
 
 # yamath
+ - vengono fatte domande sul topic con il minor punteggio nella serie selezionata
+ - basta premere invio per mandare la risposta
+ - se si sbaglia dice qual è la risposta corretta
+ - se non rispondi ti abbassa un po' il punteggio
  - Funzionano le envelopes, manca ancora il passaggio delle informazioni contestuali

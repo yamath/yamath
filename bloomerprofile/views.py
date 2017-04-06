@@ -54,14 +54,16 @@ def chooseQuestion(request):
 def submitAnswer(request):
     bloomer = Bloomer.objects.get(username=request.POST['username'])
     question = Question.objects.get(serial=request.POST['questionSerial'])
+    correct_answer = question.get_correct().text
     answer = request.POST['answer']
     if bloomer.chk_answer(question, answer):
         return HttpResponse('true')
     else:
-        return HttpResponse('false')
+        return HttpResponse(correct_answer)
 
 def unansweredQuestion(request):
     bloomer = Bloomer.objects.get(username=request.POST['username'])
     question = Question.objects.get(serial=request.POST['questionSerial'])
+    print("ununswered", bloomer, question)
     bloomer.add_unanswered(question.topic)
     return HttpResponse('true')

@@ -54,7 +54,7 @@ class Bloomer(User):
             except ObjectDoesNotExist:
                 m = Mean(bloomer=self, topic=question.topic)
                 m.save()
-                m.add_accepted()
+                m.last_unanswered_to_accepted()
             print("mean post", self.get_mean_of_topic(question.topic))
             return True
         else:
@@ -96,12 +96,15 @@ class Bloomer(User):
             topic = t
         else:
             topic = get_or_none(Topic, serial=t) or get_or_none(Topic, pk=t)
-        try:
-            return Mean.objects.get(bloomer=self, topic=topic).mean
-        except ObjectDoesNotExist:
+        if len(Mean.objects.filter(bloomer=self, topic=topic))==0:
             m = Mean(bloomer=self, topic=topic)
             m.save()
             return m.mean
+        else:
+            if len(Mean.objects.filter(bloomer=self, topic=topic))>1:
+                print("Multiplemean:", Mean.objects.filter(bloomer=self, topic=topic))
+            return Mean.objects.filter(bloomer=self, topic=topic).first().mean
+        
 
     def get_mean_of_serie(self, s):
         if isinstance(s, Serie):
@@ -226,6 +229,11 @@ class Mean(models.Model):
                  2*(1 if self.history[2] == 'A' or self.history[1] == 'X' else 0)+
                  1*(1 if self.history[3] == 'A' or self.history[2] == 'X' else 0)
                 )/18
+    
+    def last_unanswered_to_accepted(self):
+        if self.history[0] == 'X':
+            self.history = 'A' + self.hisroty[1:]
+        self.save()
 
     mean = property(get_mean)
 

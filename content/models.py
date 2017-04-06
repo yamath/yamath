@@ -127,6 +127,9 @@ class Question(models.Model):
 
     def chk_serial(self):
         return self.serial[0:6] == self.topic.serial
+    
+    def get_correct(self):
+        return Option.objects.filter(question=self, accepted=True).first()
 
     def get_options(self):
         return list(Option.objects.filter(question=self))

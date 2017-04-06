@@ -65,7 +65,7 @@ function loadQuestionForm(bloomerUsername, questionSerial) {
             $('#questionDisplayForm').html(data);
             $('#questionDisplayFormInput').keypress(function (event) {
                 var keycode = event.keyCode || event.which;
-                if (keycode === '13') {
+                if (keycode == '13') {
                     submitAnswer(bloomerUsername, questionSerial, $('#questionDisplayFormInput').val());    
                 }
             });
@@ -74,22 +74,20 @@ function loadQuestionForm(bloomerUsername, questionSerial) {
 }
 function selectSerie(bloomerUsername, serieSerial) {
     $(window).bind('beforeunload', function(){
-        return 'Abbandonando la pagina in questo momento la domanda risulterà senza risposta. Desideri abbandonare?';
+        confirm('Abbandonando la pagina in questo momento la domanda risulterà senza risposta. Desideri abbandonare?');
     });
     $('#messageDisplayDjango').hide()
     $.post(
         "/bloomerprofile/ajax/chooseQuestion/",
         {'username':bloomerUsername, 'serieSerial':serieSerial},
         function(data){
-            window.onunload = function() {
-                $.post(
-                    "/bloomerprofile/ajax/unansweredQuestion/",
-                    {'username':bloomerUsername, 'questionSerial':data},
-                    function(data){
-                        return false;
-                    }
-                );
-            }
+            $.post(
+                "/bloomerprofile/ajax/unansweredQuestion/",
+                {'username':bloomerUsername, 'questionSerial':data},
+                function(data){
+                    return false;
+                }
+            );
             loadQuestionText(bloomerUsername, data);
             loadQuestionForm(bloomerUsername, data);
             $('#messageDisplay').hide();
@@ -113,7 +111,7 @@ function submitAnswer(bloomerUsername, questionSerial, answer) {
                 $('#messageDisplayError').hide();
             } else {
                 $('#messageDisplayError').show();
-                $('#messageDisplayError').html('Risposta sbagliata!');
+                $('#messageDisplayError').html('Risposta sbagliata!<br /><br />Tu hai risposto: ' + answer + "<br />Una possibile risposta esatta sarebbe stata: " + data);
                 $('#messageDisplaySuccess').hide();                
             }
             $('#questionDisplay').hide();
