@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test
 from django.views.decorators.cache import never_cache
-from blooming.models import *
+from bloomerprofile.models import *
 from content.models import *
 import backend.models as backend
 from django.contrib import messages
@@ -11,22 +11,21 @@ from backend.create_views import *
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def index(request):
-    bloomers = sorted(Bloomer.objects.all(), key=(lambda bloomer: bloomer.score_mean))
+    bloomers = sorted(Bloomer.objects.all(), key=(lambda bloomer: bloomer.mean))
     classrooms = Classroom.objects.all()
-    topics = Topic.objects.all()
-    claims = backend.Claim.objects.all()
-    pendings = Option.objects.filter(status='p')
-    return render(request, 'backend/index.html', {'bloomers':bloomers, 'classrooms':classrooms, 'topics':topics, 'claims':claims, 'pendings':pendings})
+    series = Serie.objects.all()
+    return render(request, 'backend/index.html', {'bloomers':bloomers, 'classrooms':classrooms, 'series':series})
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def bloomers(request):
-    return render(request, 'backend/bloomers.html', {'bloomers':Bloomer.objects.all()})
+    return render(request, 'backend/bloomers.html', {'bloomers':Bloomer.objects.all(), 'classrooms':Classroom.objects.all()})
 
 @never_cache
-@user_passes_test(lambda u: u.is_superuser)
 def bloomer_details(request, username):
-    bloomer = Bloomer.objects.get(user=User.objects.get(username=username))
+    if not (request.user.is_superuser or request.user.username == username):
+        return redirect('/')
+    bloomer = Bloomer.objects.get(username=username)
     classrooms = Classroom.objects.all()
     if request.method == 'GET':
         return render(request, 'backend/bloomer_details.html', {'bloomer':bloomer, 'classrooms':classrooms})
@@ -34,9 +33,9 @@ def bloomer_details(request, username):
         bloomer.first_name = request.POST['first_name']
         bloomer.last_name = request.POST['last_name']
         bloomer.email = request.POST['email']
-        bloomer.professor = 'professor' in request.POST
+        if 'password' in request.POST and len(request.POST['password'])>4:
+            bloomer.set_password(request.POST['password'])
         bloomer.save()
-        bloomer.update_classrooms([ key[-4:] for key in request.POST.keys() if key[:19]=='classroom_checkbox_' ])
         return render(request, 'backend/bloomer_details.html', {'bloomer':bloomer, 'classrooms':classrooms})
 
 def claim(request):

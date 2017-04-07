@@ -94,6 +94,9 @@
           <button type="button" class="navbar-toggle" onClick="window.location.assign('{% url 'blooming:index' %}');">
             <span class="glyphicon glyphicon-book" style="color:#ddd;"></span>
           </button>
+          <button type="button" class="navbar-toggle" onClick="window.location.assign('{% url 'backend:bloomer_details' bloomer.username %}');">
+            <span class="glyphicon glyphicon-user" style="color:#ddd;"></span>
+          </button>
           <button type="button" class="navbar-toggle" onClick="mathjaxTypeset();">
             <span class="glyphicon glyphicon-refresh" style="color:#ddd;"></span>
           </button>
@@ -107,6 +110,14 @@
                   RiFormula <span class="glyphicon glyphicon-refresh"></span>
                 </button>
               </div>
+            </li>
+            <li>
+              <form class="navbar-form form-inline" method="get" action="{% url 'backend:bloomer_details' bloomer.username %}" autocomplete="off">
+                {% csrf_token %}
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                  Profilo <span class="glyphicon glyphicon-user"></span>
+                </button>
+              </form>
             </li>
             <li>
               <form class="navbar-form form-inline" method="get" action="{% url 'blooming:index' %}" autocomplete="off">
@@ -135,7 +146,9 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-
+    {% if request.user.is_superuser %}
+    <p><a href="{% url 'backend:index' %}">Backend</a></p>
+    {% endif %}
     <div class="container" id="messageDisplay">
       {% if messages %}
       <div class="row" id="messageDisplayDjango">

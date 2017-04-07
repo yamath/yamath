@@ -2,19 +2,15 @@
 
 {% block content %}
 
-<div class="container">
-    <div class="row">
-        <div class="col-xs-12">
-            <h1>Porte aperte</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4><a href="{% url 'backend:bloomers' %}">Bloomers</a> <a data-toggle="collapse" href="#bloomers">expand</a></h4>
+<h1>Porte aperte</h1>
+<p><a href="{% url 'backend:bloomers' %}">Bloomers</a></p>
+
+
+            <!--<h4><a href="{% url 'backend:bloomers' %}">Bloomers</a> <a data-toggle="collapse" href="#bloomers">expand</a></h4>
         </div>
         <div class="col-xs-8 collapse" id="bloomers">
             {% for bloomer in bloomers %}
-            <p>Bloomer <a href="{% url 'backend:bloomer_details' bloomer.user.username %}">{{ bloomer.user.username }}</a> ({{ bloomer.score_mean }}%)</p>
+            <p>Bloomer <a href="{% url 'backend:bloomer_details' bloomer.username %}">{{ bloomer.username }}</a> ({{ bloomer.mean }}%)</p>
             {% endfor %}
         </div>
     </div>
@@ -24,7 +20,7 @@
         </div>
         <div class="col-xs-8 collapse" id="classrooms">
             {% for classroom in classrooms %}
-            <p>Classroom <a href="{% url 'backend:classroom_details' classroom.serial %}">{{ classroom.serial }}</a></p>
+            <p>Classroom <a href="{% url 'backend:classroom_details' classroom.name %}">{{ classroom.name }}</a></p>
             {% endfor %}
         </div>
     </div>
@@ -33,10 +29,10 @@
             <h4><a href="{% url 'backend:topics' %}">Topics</a> <a data-toggle="collapse" href="#topics">expand</a></h4>
         </div>
         <div class="col-xs-8 collapse" id="topics">
-            {% for topic in topics %}
-            <p>Topic <a href="{% url 'backend:topic_details' topic.pk %}">{{ topic.pk }}</a>: {{ topic.text }}</p>
+            {% for serie in series %}
+            <p>Topic <a href="{ url 'backend:serie_details' serie.serial }">{{ serie.serial }}</a>: {{ serie.name }}</p>
             {% endfor %}
-            <form method="post" action="{% url 'backend:create_topic' %}" autocomplete="off">
+            <form method="post" action="{ url 'backend:create_topic' }" autocomplete="off">
                 {% csrf_token %}
                 New <input type="text" name="create_topic_text" /><input type="submit" value="save" />
             </form>
@@ -84,6 +80,6 @@
             {% endif %}
         </div>
     </div>
-</div>
+</div>-->
 
 {% endblock %}

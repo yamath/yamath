@@ -1,29 +1,25 @@
 {% extends "base.html" %}
+{% load backend_extras %}
 
 {% block content %}
 
-<h1>Bloomer: {{ bloomer.user.username }}</h1>
-<p>Username: {{ bloomer.user.username }} {% if bloomer.professor %} is professor {% endif %}</p>
-<p>First_name: {{ bloomer.first_name }}</p>
-<p>Last_name: {{ bloomer.last_name }}</p>
-<p>Email: {{ bloomer.email }}</p>
-<p>Classrooms: {% for classroom in bloomer.classrooms %}<a href="{% url 'backend:classroom_details' classroom.serial %}">{{ classroom.serial }}</a>, {% endfor %}</p>
-<hr />
-<form method="post" action="{% url 'backend:bloomer_details' bloomer.user.username %}" autocomplete="off">
+<form method="post" action="{% url 'backend:bloomer_details' bloomer.username %}" autocomplete="off">
 {% csrf_token %}
-<table>
-<p>First_name: <input type="text" name="first_name" value="{{ bloomer.first_name }}" /></p>
-<p>Last_name: <input type="text" name="last_name" value="{{ bloomer.last_name }}" /></p>
+<h1>Profile: {{ bloomer.username }}</h1>
+<p>Nome: <input type="text" name="first_name" value="{{ bloomer.first_name }}" /></p>
+<p>Cognome: <input type="text" name="last_name" value="{{ bloomer.last_name }}" /></p>
 <p>Email: <input type="text" name="email" value="{{ bloomer.email }}" /></p>
-<p>Is professor: <input type="checkbox" name="professor" {% if bloomer.professor %}checked{% endif %} /></p>
-<ol>
-    {% for classroom in classrooms %}
-    <li>
-        <input type="checkbox" name="classroom_checkbox_{{ classroom.serial }}" {% if classroom in bloomer.classrooms %}checked{% endif %} /> {{ classroom.serial }}
-    </li>
-    {% endfor %}
-</ol>
+<p>Nuova password [almeno quattro caratteri (<strong>attenzione!</strong>)]: <input type="text" name="password" value="" /></p>
+<p>Classe: {% for c in bloomer.classrooms %}{{ c.name }}, {% endfor %}</p>
 <input type="submit" value="salva" />
 </form>
+<a href="{% url 'main' %}">Torna alla pagina principale</a>
+<h2>Punteggi</h2>
+{% for s in bloomer.series %}
+<h3>{{ s.name }} ({{ bloomer|bsMean:s|stringformat:"0.2f" }})</h3>
+{% for t in s.topics %}
+<p> - {{ t.name }} ({{ bloomer|btMean:t|stringformat:"0.2f" }})</p>
+{% endfor %}
+{% endfor %}
 
 {% endblock %}

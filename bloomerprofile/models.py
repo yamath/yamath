@@ -42,7 +42,7 @@ class Bloomer(User):
             m.add_unanswered()
 
     def chk_answer(self, q, text):
-        print("chk_answer", q.serial, text)
+        #print("chk_answer", q.serial, text)
         if isinstance(q, Question):
             question = q
         else:
@@ -64,7 +64,7 @@ class Bloomer(User):
                 m = Mean(bloomer=self, topic=question.topic)
                 m.save()
                 m.last_unanswered_to_rejected()
-            print("mean post", self.get_mean_of_topic(question.topic))
+            #print("mean post", self.get_mean_of_topic(question.topic))
             return False
 
     def del_classroom(self, c):
@@ -102,7 +102,9 @@ class Bloomer(User):
             return m.mean
         else:
             if len(Mean.objects.filter(bloomer=self, topic=topic))>1:
+                sorted(Mean.objects.filter(bloomer=self, topic=topic), key=lambda m:m.mean)[0].delete()
                 print("Multiplemean:", Mean.objects.filter(bloomer=self, topic=topic))
+                
             return Mean.objects.filter(bloomer=self, topic=topic).first().mean
         
 
