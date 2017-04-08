@@ -44,9 +44,9 @@ def loadQuestionText(bloomer, question):
 def loadQuestionForm(bloomer, question):
     if question.kind == 'b':
         return [
-            "<div class='col-xs-6'><button onClick=\"submitAnswer('{}', '{}', '{}')\">Vero<button /></div>".format(
+            "<div class='col-xs-6'><button onClick=\"submitAnswer('{}', '{}', '{}')\">Vero</button></div>".format(
                 bloomer.username, question.serial, 'true'),
-            "<div class='col-xs-6'><button onClick=\"submitAnswer('{}', '{}', '{}')\">Falso<button /></div>".format(
+            "<div class='col-xs-6'><button onClick=\"submitAnswer('{}', '{}', '{}')\">Falso</button></div>".format(
                 bloomer.username, question.serial, 'false')]
     if question.kind == 'm':
         return "<div class='col-xs-12'>{}</div>".format(''.join([
