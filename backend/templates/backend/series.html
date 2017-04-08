@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load backend_extras %}
+
+{% block content %}
+
+<p><a href="{% url 'backend:index' %}">backend</a></p>
+<h1>Series</h1>
+<ol>
+{% for serie in series %}
+    <li>Serie {{ serie.serial }} <a href="{% url 'backend:serie_details' serie.serial %}">{{ serie.name }}</a> {{ serie|getClassroomsOfSerie }}</li>
+{% endfor %}
+    <li><a href="{% url 'backend:serie_new' %}">New serie</a></li>
+</ol>
+
+{% endblock %}

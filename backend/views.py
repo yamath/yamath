@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test
+from django.urls import reverse
 from django.views.decorators.cache import never_cache
 from bloomerprofile.models import *
 from content.models import *
@@ -38,6 +39,141 @@ def bloomer_details(request, username):
         bloomer.save()
         return render(request, 'backend/bloomer_details.html', {'bloomer':bloomer, 'classrooms':classrooms})
 
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def classrooms(request):
+    return render(request, 'backend/classrooms.html', {'classrooms':Classroom.objects.all()})
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def classroom_details(request, name):
+    classroom = Classroom.objects.get(name=name)
+    if request.method == 'GET':
+        return render(request, 'backend/classroom_details.html', {'classroom':classroom})
+    elif request.method == 'POST':
+        classroom.name = request.POST['name']
+        if request.POST['add_serie']:
+            classroom.add_serie(Serie.objects.get(serial=request.POST['add_serie']))
+        if request.POST['add_bloomer']:
+            classroom.add_bloomer(Bloomer.objects.get(username=request.POST['add_bloomer']))
+        if request.POST['del_serie']:
+            classroom.del_serie(Serie.objects.get(serial=request.POST['del_serie']))
+        if request.POST['del_bloomer']:
+            classroom.del_bloomer(Bloomer.objects.get(username=request.POST['del_bloomer']))
+        classroom.save()
+        return render(request, 'backend/classroom_details.html', {'classroom':classroom})
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def series(request):
+    series = Serie.objects.all()
+    return render(request, 'backend/series.html', {'series':series})
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def serie_new(request):
+    if request.method == 'GET':
+        return render(request, 'backend/serie_new.html')
+    elif request.method == 'POST':
+        serie = Serie.objects.create(serial='0', name='N/N')
+        serie.name = request.POST['name']
+        serials = { int(s.serial) for s in Serie.objects.all() }
+        serie.serial = "{0:03d}".format(min( set(range(1, max(serials)+2)) - serials ))
+        serie.save()
+        return redirect(reverse('backend:serie_details', args=(serie.serial,)))
+        return render(request, 'backend/serie_details.html', {'serie':serie})
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def serie_details(request, serieSerial):
+    serie = Serie.objects.get(serial=serieSerial)
+    if request.method == 'GET':
+        return render(request, 'backend/serie_details.html', {'serie':serie})
+    elif request.method == 'POST':
+        serie.name = request.POST['name']
+        if 'add_ante' in request.POST and len(request.POST['add_ante'])>0:
+            serie.add_ante(request.POST['add_ante'])
+        if 'del_ante' in request.POST and len(request.POST['del_ante'])>0:
+            serie.del_ante(request.POST['del_ante'])
+        serie.save()
+        return render(request, 'backend/serie_details.html', {'serie':serie})
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def topic_new(request, serieSerial):
+    if request.method == 'GET':
+        serie = Serie.objects.get(serial=serieSerial)
+        serials = {0}.union({ int(t.serial[-3:]) for t in Topic.objects.filter(serie=serie) })
+        serial = "{0}{1:03d}".format(serie.serial, min( set(range(1, max(serials)+2)) - serials ))
+        topic = Topic.objects.create(serial=serial, name='name', serie=serie)
+        topic.save()
+        return redirect(reverse('backend:topic_details', args=(topic.serial,)))
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def topic_details(request, topicSerial):
+    topic = Topic.objects.get(serial = topicSerial)
+    if request.method == 'GET':
+        return render(request, 'backend/topic_details.html', {'topic':topic})
+    elif request.method == 'POST':
+        topic.name = request.POST['name']
+        topic.mobile = 'mobile' in request.POST
+        try:
+            topic.kind = int(request.POST['kind'])
+        except:
+            pass
+        topic.save()
+        return render(request, 'backend/topic_details.html', {'topic':topic})
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def question_new(request, topicSerial):
+    if request.method == 'GET':
+        topic = Topic.objects.get(serial=topicSerial)
+        serials = {0}.union({ int(q.serial[-3:]) for q in Question.objects.filter(topic=topic) })
+        serial = "{0}{1:03d}".format(topic.serial, min( set(range(1, max(serials)+2)) - serials ))
+        question = Question.objects.create(serial=serial, text='text', topic=topic, kind='o')
+        question.save()
+        return redirect(reverse('backend:question_details', args=(question.serial,)))
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def question_details(request, questionSerial):
+    question = Question.objects.get(serial = questionSerial)
+    if request.method == 'GET':
+        return render(request, 'backend/question_details.html', {'question':question})
+    elif request.method == 'POST':
+        question.text = request.POST['text']
+        question.kind = request.POST['kind']
+        question.save()
+        return render(request, 'backend/question_details.html', {'question':question})
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def option_new(request, questionSerial):
+    if request.method == 'GET':
+        question = Question.objects.get(serial=questionSerial)
+        serials = {0}.union({ int(q.serial[-3:]) for q in Option.objects.filter(question=question) })
+        serial = "{0}{1:03d}".format(question.serial, min( set(range(1, max(serials)+2)) - serials ))
+        option = Option.objects.create(serial=serial, text='text', question=question)
+        option.save()
+        return redirect(reverse('backend:option_details', args=(option.serial,)))
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def option_details(request, optionSerial):
+    option = Option.objects.get(serial = optionSerial)
+    if request.method == 'GET':
+        return render(request, 'backend/option_details.html', {'option':option})
+    elif request.method == 'POST':
+        option.text = request.POST['text']
+        option.accepted = 'accepted' in request.POST
+        option.save()
+        return render(request, 'backend/option_details.html', {'option':option})
+    
+    
+    
+    
 def claim(request):
     try:
         bloomer = Bloomer.objects.get(pk=request.POST['claim_bloomer_pk'])
@@ -69,31 +205,6 @@ def claim_solved(request, claim_pk):
 @user_passes_test(lambda u: u.is_superuser)
 def claims(request):
     return render(request, 'backend/claims.html', {'claims':backend.Claim.objects.all()})
-
-@never_cache
-@user_passes_test(lambda u: u.is_superuser)
-def classrooms(request):
-    return render(request, 'backend/classrooms.html', {'classrooms':Classroom.objects.all()})
-
-@never_cache
-@user_passes_test(lambda u: u.is_superuser)
-def classroom_details(request, serial):
-    classroom = Classroom.objects.get(serial=serial)
-    if request.method == 'GET':
-        return render(request, 'backend/classroom_details.html', {'classroom':classroom})
-    elif request.method == 'POST':
-        #classroom.update_bloomers([ key[17:] for key in request.POST.keys() if key[:17]=='bloomer_checkbox_' ] + [request.POST['new_bloomer']])
-        classroom.serial = request.POST['serial']
-        if request.POST['add_topic']:
-            classroom.add_topic(Topic.objects.get(pk=int(request.POST['add_topic'])))
-        if request.POST['add_bloomer']:
-            classroom.add_bloomer(Bloomer.objects.get(user=User.objects.get(request.POST['add_bloomer'])))
-        if request.POST['delete_topic']:
-            classroom.delete_topic(Topic.objects.get(pk=int(request.POST['delete_topic'])))
-        if request.POST['delete_bloomer']:
-            classroom.delete_bloomer(Bloomer.objects.get(user=User.objects.get(request.POST['delete_bloomer'])))
-        classroom.save()
-        return render(request, 'backend/classroom_details.html', {'classroom':classroom})
 
 
 @never_cache
@@ -155,55 +266,8 @@ def pending_solved(request, option_pk):
     option.save()
     return redirect('backend:pendings')
 
-@never_cache
-@user_passes_test(lambda u: u.is_superuser)
-def question_details(request, question_pk):
-    if (question_pk==None or question_pk=='None'):
-        question_pk = request.GET['question_pk']
-    question = Question.objects.get(pk=question_pk)
-    if request.method == 'GET':
-        return render(request, 'backend/question_details.html', {'question':question})
-    elif request.method == 'POST':
-        question.topic = Topic.objects.get(pk=request.POST['topic_pk'])
-        question.text = request.POST['question_text']
-        question.kind = request.POST['question_kind']
-        for (key, value) in request.POST.items():
-            if key[:11]=='option_text':
-                option = Option.objects.get(pk=int(key[11:]))
-                if value=='':
-                    option.delete()
-                else:
-                    option.text = value
-                    option.status = 'a' if ('option_accepted'+key[11:] in request.POST) else 'r'
-                    option.save()
-        if request.POST['new_option_text'] != '':
-            new_option = Option(question=question, user=request.user, text=request.POST['new_option_text'], status=('a' if ('new_option_accepted' in request.POST) else 'r'))
-            new_option.save()
-        question.save()
-        return render(request, 'backend/question_details.html', {'question':question})
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
 def topics(request):
     return render(request, 'backend/topics.html', {'topics':Topic.objects.all()})
-
-@never_cache
-@user_passes_test(lambda u: u.is_superuser)
-def topic_details(request, pk):
-    topic = Topic.objects.get(pk=pk)
-    classrooms = Classroom.objects.all()
-    questions = Question.objects.filter(topic=topic)
-    if request.method == 'GET':
-        return render(request, 'backend/topic_details.html', {'topic':topic, 'classrooms':classrooms, 'questions':questions})
-    elif request.method == 'POST':
-        topic.update_antes([ key[15:] for key in request.POST.keys() if key[:15]=='antes_checkbox_' ] + [request.POST['new_ante']])
-        topic.update_posts([ key[15:] for key in request.POST.keys() if key[:15]=='posts_checkbox_' ] + [request.POST['new_post']])
-        topic.update_classrooms([ key[19:] for key in request.POST.keys() if key[:19]=='classroom_checkbox_' ])
-        topic.text = request.POST['text']
-        try:
-            topic.bloom_index = int(request.POST['bloom_index'])
-        except:
-            topic.bloom_index = None
-        topic.mobile = 'mobile' in request.POST
-        topic.save()
-        return render(request, 'backend/topic_details.html', {'topic':topic, 'classrooms':classrooms, 'questions':questions})

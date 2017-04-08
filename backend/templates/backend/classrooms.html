@@ -2,12 +2,14 @@
 
 {% block content %}
 
-<p>Classrooms:
-<ol>
-{% for classroom in classrooms %}
-    <li>Classroom <a href="{% url 'backend:classroom_details' classroom.serial %}">{{ classroom.serial }}</a></li>
-{% endfor %}
-</ol>
+<p><a href="{% url 'backend:index' %}">backend</a></p>
+<h1>Classrooms</h1>
+<p>
+    <ol>
+    {% for classroom in classrooms %}
+        <li>Classroom <a href="{% url 'backend:classroom_details' classroom.name %}">{{ classroom.name }}</a></li>
+    {% endfor %}
+    </ol>
 </p>
 
 {% endblock %}

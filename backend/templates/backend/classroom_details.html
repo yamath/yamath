@@ -3,57 +3,44 @@
 {% block content %}
 
 
-<form method="post" action="{% url 'backend:classroom_details' classroom.serial %}" autocomplete="off">
+<form method="post" action="{% url 'backend:classroom_details' classroom.name %}" autocomplete="off">
 {% csrf_token %}
-<div class="container">
-    <div class="row">
-        <div class="col-xs-12">
-            <h1>Classroom: {{ classroom.serial }}</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4>Serial</h4>
-        </div>
-        <div class="col-xs-8">
-            <input type="text" name="serial" value="{{ classroom.serial }}" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4>Topic <a data-toggle="collapse" href="#topic_list">expand</a></h4>
-        </div>
-        <div class="col-xs-8 collapse in" id="topic_list">
-            <ol>
-                {% for topic in classroom.topics %}
-                <li>Topic <a href="{% url 'backend:topic_details' topic.pk %}">{{ topic.pk }}</a>: {{ topic.text }}</li>
-                {% endfor %}
-                <li>Add one <input type="text" name="add_topic" /></li>
-                <li>Delete one <input type="text" name="delete_topic" /></li>
-            </ol>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4>Bloomer <a data-toggle="collapse" href="#bloomer_list">expand</a></h4>
-        </div>
-        <div class="col-xs-8 collapse" id="bloomer_list">
-            <ol>
-                {% for bloomer in classroom.bloomers %}
-                <li>Bloomer <a href="{% url 'backend:bloomer_details' bloomer.user.username %}">{{ bloomer.user.username }}</a></li>
-                {% endfor %}
-                <li>Add one <input type="text" name="add_bloomer" /></li>
-                <li>Delete one <input type="text" name="delete_bloomer" /></li>
-            </ol>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <input type="submit" value="salva" />
-        </div>
-    </div>
-</div>
-
+<p><a href="{% url 'backend:index' %}">backend</a> / <a href="{% url 'backend:classrooms' %}">classrooms</a></p>
+<h1>Classroom: {{ classroom.name }}</h1>
+<p>Name <input type="text" name="name" value="{{ classroom.name }}" /></p>
+<p>
+    Series
+    <ol>
+        {% for serie in classroom.series %}
+        <li>
+            {{ serie.serial }} <a href="{% url 'backend:serie_details' serie.serial %}">{{ serie.name }}</a>
+        </li>
+        {% endfor %}
+        <li>
+            add serie <input type="text" name="add_serie" />
+        </li>
+        <li>
+            del serie <input type="text" name="del_serie" />
+        </li>
+    </ol>
+</p>
+<p>
+    Bloomers
+    <ol>
+    {% for bloomer in classroom.bloomers %}
+        <li>
+            <a href="{% url 'backend:bloomer_details' bloomer.username %}">{{ bloomer.username }}</a>
+        </li>
+    {% endfor %}
+        <li>
+            add bloomer <input type="text" name="add_bloomer" />
+        </li>
+        <li>
+            del bloomer <input type="text" name="del_bloomer" />
+        </li>
+    </ol>
+</p>
+<input type="submit" value="salva" />
 </form>
 
 {% endblock %}

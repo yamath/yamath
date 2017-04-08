@@ -4,82 +4,8 @@
 
 <h1>Porte aperte</h1>
 <p><a href="{% url 'backend:bloomers' %}">Bloomers</a></p>
+<p><a href="{% url 'backend:classrooms' %}">Classrooms</a></p>
+<p><a href="{% url 'backend:series' %}">Series</a></p>
 
-
-            <!--<h4><a href="{% url 'backend:bloomers' %}">Bloomers</a> <a data-toggle="collapse" href="#bloomers">expand</a></h4>
-        </div>
-        <div class="col-xs-8 collapse" id="bloomers">
-            {% for bloomer in bloomers %}
-            <p>Bloomer <a href="{% url 'backend:bloomer_details' bloomer.username %}">{{ bloomer.username }}</a> ({{ bloomer.mean }}%)</p>
-            {% endfor %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4><a href="{% url 'backend:classrooms' %}">Classrooms</a> <a data-toggle="collapse" href="#classrooms">expand</a></h4>
-        </div>
-        <div class="col-xs-8 collapse" id="classrooms">
-            {% for classroom in classrooms %}
-            <p>Classroom <a href="{% url 'backend:classroom_details' classroom.name %}">{{ classroom.name }}</a></p>
-            {% endfor %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4><a href="{% url 'backend:topics' %}">Topics</a> <a data-toggle="collapse" href="#topics">expand</a></h4>
-        </div>
-        <div class="col-xs-8 collapse" id="topics">
-            {% for serie in series %}
-            <p>Topic <a href="{ url 'backend:serie_details' serie.serial }">{{ serie.serial }}</a>: {{ serie.name }}</p>
-            {% endfor %}
-            <form method="post" action="{ url 'backend:create_topic' }" autocomplete="off">
-                {% csrf_token %}
-                New <input type="text" name="create_topic_text" /><input type="submit" value="save" />
-            </form>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4><a href="#">Questions</a> <a data-toggle="collapse" href="#questions">expand</a></h4>
-        </div>
-        <div class="col-xs-8 collapse in" id="questions">
-            <p>
-                <form method="get" action="{% url 'backend:question_details' None %}" autocomplete="off">
-                {% csrf_token %}
-                Visit question
-                <input type="text" name="question_pk" />
-                <input type="submit" value="go" />
-                </form>
-                <p><a href="{% url 'backend:create_bulk_bool' %}">create bulk bool</a></p>
-                <p><a href="{% url 'backend:create_multi' %}">create multi</a></p>
-                <p><a href="{% url 'backend:new_question' %}">new question</a></p>
-            </p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4><a href="{% url 'backend:claims' %}">Claims</a> <a data-toggle="collapse" href="#claims">expand</a></h4>
-        </div>
-        <div class="col-xs-8 collapse in" id="claims">
-            {% if claims %}
-            <p><a href="{% url 'backend:claims' %}">There are claims</a></p>
-            {% else %}
-            <p>There are no claims</p>
-            {% endif %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4><a href="{% url 'backend:pendings' %}">Pendings</a> <a data-toggle="collapse" href="#pendings">expand</a></h4>
-        </div>
-        <div class="col-xs-8 collapse in" id="pendings">
-            {% if pendings %}
-            <p><a href="{% url 'backend:pendings' %}">There are pendings</a></p>
-            {% else %}
-            <p>There are no pendings</p>
-            {% endif %}
-        </div>
-    </div>
-</div>-->
 
 {% endblock %}

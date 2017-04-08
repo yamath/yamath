@@ -2,97 +2,28 @@
 
 {% block content %}
 
-<form method="post" action="{% url 'backend:topic_details' topic.pk %}" autocomplete="off">
+<p><a href="{% url 'backend:index' %}">backend</a> / <a href="{% url 'backend:series' %}">series</a> / <a href="{% url 'backend:serie_details' topic.serie.serial %}">{{ topic.serie.serial }}</a> </p>
+<form method="post" action="{% url 'backend:topic_details' topic.serial %}" autocomplete="off">
 {% csrf_token %}
-<div class="container">
-    <div class="row">
-        <div class="col-xs-12">
-            <h1>Topic {{ topic.pk }}</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4>Text</h4>
-        </div>
-        <div class="col-xs-8">
-            <input type="text" name="text" value="{{ topic.text }}" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4>Bloom index</h4>
-        </div>
-        <div class="col-xs-8">
-            <input type="text" name="bloom_index" value="{{ topic.bloom_index }}" /><br />
-            mobile <input type="checkbox" name="mobile" {% if topic.mobile %}checked{% endif %} />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4>Antes</h4>
-        </div>
-        <div class="col-xs-8">
-            add one<input type="text" name="new_ante" value="" />
-            <ol>
-                {% for ante in topic.antes %}
-                <li>
-                    <input type="checkbox" name="antes_checkbox_{{ ante.pk }}" checked/>
-                    <a href="{% url 'backend:topic_details' ante.pk %}">{{ ante.pk }}</a> {{ ante.text }}
-                </li>
-                {% endfor %}
-            </ol>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4>Posts</h4>
-        </div>
-        <div class="col-xs-8">
-            add one<input type="text" name="new_post"/>
-            <ol>
-                {% for post in topic.posts %}
-                <li>
-                    <input type="checkbox" name="posts_checkbox_{{ post.pk }}" checked/>
-                    <a href="{% url 'backend:topic_details' post.pk %}">{{ post.pk }}</a> {{ post.text }}
-                </li>
-                {% endfor %}
-            </ol>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4>Classrooms</h4>
-        </div>
-        <div class="col-xs-8">
-            <ol>
-                {% for classroom in classrooms %}
-                <li>
-                    <input type="checkbox" name="classroom_checkbox_{{ classroom.serial }}" {% if classroom in topic.classrooms %}checked{% endif %} /> {{ classroom.serial }}
-                </li>
-                {% endfor %}
-            </ol>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <h4>Questions</h4>
-        </div>
-        <div class="col-xs-8">
-            <ol>
-                {% for question in questions %}
-                <li>
-                    Question <a href="{% url 'backend:question_details' question.pk %}">{{ question.pk }}</a> ({{ question.kind }})
-                </li>
-                {% endfor %}
-            </ol>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <input type="submit" value="salva" />
-        </div>
-    </div>
-</div>
+<h1>Topic {{ topic.serial }}</h1>
+<p>Name <input type="text" name="name" value="{{ topic.name }}" /></p>
+<p>Serie {{ topic.serie.serial }} {{ topic.serie.name }}</p>
+<p>Kind <input type="text" name="kind" value="{{ topic.kind }}" /></p>
+<p>Mobile <input type="checkbox" name="mobile" {% if topic.mobile %}checked{% endif %}/></p>
+<p>
+    Questions
+    <ol>
+    {% for question in topic.questions %}
+        <li>
+            {{ question.serial }} <a href="{% url 'backend:question_details' question.serial %}">{{ question.text }}</a>
+        </li>
+    {% endfor %}
+        <li>
+            <a href="{% url 'backend:question_new' topic.serial %}">new question</a>
+        </li>
+    </ol>
+</p>
+<input type="submit" value="salva" />
 </form>
 
 {% endblock %}

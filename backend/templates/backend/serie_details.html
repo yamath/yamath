@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load backend_extras %}
+
+{% block content %}
+
+
+<p><a href="{% url 'backend:index' %}">backend</a> / <a href="{% url 'backend:series' %}">series</a></p>
+<form method="post" action="{% url 'backend:serie_details' serie.serial %}" autocomplete="off">
+{% csrf_token %}
+<h1>Serie {{ serie.serial }}</h1>
+<p>Name <input type="text" name="name" value="{{ serie.name }}" /></p>
+<p>
+    Antes 
+    <ol>
+        {% for ante in serie.antes %}
+        <li>
+            {{ ante.serial }} {{ ante.name }}
+        </li>
+        {% endfor %}
+        <li>
+            add one<input type="text" name="add_ante" value="" />
+        </li>
+        <li>
+            del one <input type="text" name="del_ante" value="" />
+        </li>
+    </ol>
+</p>
+<p>Posts: {{ serie.posts }}</p>
+<p>Classrooms: {{ serie|getClassroomsOfSerie }}</p>
+<p>
+    Topics
+    <ol>
+    {% for topic in serie.topics %}
+        <li>
+            {{ topic.serial }} <a href="{% url 'backend:topic_details' topic.serial %}">{{ topic.name }}</a>
+        </li>
+    {% endfor %}
+        <li>
+            <a href="{% url 'backend:topic_new' serie.serial %}">new topic</a>
+        </li>
+    </ol>
+</p>
+<input type="submit" value="salva" />
+</form>
+
+{% endblock %}

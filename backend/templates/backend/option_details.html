@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<p><a href="{% url 'backend:index' %}">backend</a> / <a href="{% url 'backend:series' %}">series</a> / <a href="{% url 'backend:serie_details' option.question.topic.serie.serial %}">{{ option.question.topic.serie.serial }}</a> / <a href="{% url 'backend:topic_details' option.question.topic.serial %}">{{ option.question.topic.serial }}</a> / <a href="{% url 'backend:question_details' option.question.serial %}">{{ option.question.serial }}</a> </p>
+<h1>Option {{ option.serial }}</h1>
+<form method="post" action="{% url 'backend:option_details' option.serial %}" autocomplete="off">
+{% csrf_token %}
+    <p>Question {{ option.question.serial }} <blockquote>{{ option.question.text|safe }}</blockquote></p>
+    <p>Text <input type="text" name="text" value="{{ option.text }}" /></p>
+    <p>Accepted <input type="checkbox" name="accepted" {% if option.accepted %}checked{% endif %}/></p>
+<input type="submit" value="salva">
+</form>
+{% endblock %}
