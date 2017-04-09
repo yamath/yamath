@@ -65,6 +65,57 @@ def classroom_details(request, name):
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
+def copy(request, oldSerial, newSerial):
+    if len(oldSerial)==3 and len(newSerial)==3:
+        oldSerie = Serie.objects.get(serial=oldSerial)
+        newSerie = Serie(serial=newSerial, name=oldSerie.name, recollection=oldSerie.recollection)
+        newSerie.save()
+        for ante in oldSerie.antes:
+            newSerie.add_ante(ante)
+        for oldTopic in oldSerie.topics:
+            copy(request, oldTopic.serial, newSerial+oldTopic.serial[3:])
+    elif len(oldSerial)==6 and len(newSerial)==6:
+        oldTopic = Topic.objects.get(serial=oldSerial)
+        newSerie = Serie.objects.get(serial=newSerial[0:3])
+        newTopic = Topic(serial=newSerial, kind=oldTopic.kind, mobile=oldTopic.mobile, name=oldTopic.name, serie=newSerie)
+        newTopic.save()
+        for oldQuestion in oldTopic.questions:
+            copy(request, oldQuestion.serial, newSerial+oldQuestion.serial[6:])
+    elif len(oldSerial)==9 and len(newSerial)==9:
+        oldQuestion=Question.objects.get(serial=oldSerial)
+        newTopic = Topic.objects.get(serial=newSerial[0:6])
+        newQuestion = Question(serial=newSerial, text=oldQuestion.text, topic=newTopic, kind=oldQuestion.kind)
+        newQuestion.save()
+        for oldOption in oldQuestion.options:
+            copy(request, oldOption.serial, newSerial+oldOption.serial[9:])
+    elif len(oldSerial)==12 and len(newSerial)==12:
+        oldOption = Option.objects.get(serial=oldSerial)
+        newQuestion = Question.objects.get(serial=newSerial[0:9])
+        newOption = Option(serial=newSerial, question=newQuestion, text=oldOption.text, accepted=oldOption.accepted)
+        newOption.save()
+    else:
+        raise ValueError("Serials does not match")
+    return redirect(reverse("backend:index"))
+
+
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def delete(request, serial):
+    if len(serial)==3:
+        Serie.objects.get(serial=serial).delete()
+    elif len(serial)==6:
+        Topic.objects.get(serial=serial).delete()
+    elif len(serial)==9:
+        Question.objects.get(serial=serial).delete()
+    elif len(serial)==12:
+        Option.objects.get(serial=serial).delete()
+    else:
+        raise ValueError("Serial mismatch")
+    return redirect(reverse("backend:index"))
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
 def series(request):
     series = Serie.objects.all()
     return render(request, 'backend/series.html', {'series':series})

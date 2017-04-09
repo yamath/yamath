@@ -17,6 +17,8 @@ urlpatterns = [
     url(r'^question_new/(?P<topicSerial>[0-9A-Za-z]+)/$', views.question_new, name="question_new"),
     url(r'^option_details/(?P<optionSerial>[0-9A-Za-z]+)/$', views.option_details, name="option_details"),
     url(r'^option_new/(?P<questionSerial>[0-9A-Za-z]+)/$', views.option_new, name="option_new"),
+    url(r'^copy/(?P<oldSerial>[0-9A-Za-z]+)-(?P<newSerial>[0-9A-Za-z]+)/$', views.copy, name="copy"),
+    url(r'^delete/(?P<serial>[0-9A-Za-z]+)/$', views.delete, name="delete"),
     ###
     url(r'^claim/$', views.claim, name="claim"),
     url(r'^claim_solved/(?P<claim_pk>[0-9A-Za-z]+)/$', views.claim_solved, name="claim_solved"),
