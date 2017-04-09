@@ -237,6 +237,7 @@ class Mean(models.Model):
         if self.history[0] == 'X':
             self.history = 'A' + self.history[1:]
         self.save()
+        self.del_forget()
         print("cpost", self.history)
     
     def last_unanswered_to_rejected(self):
