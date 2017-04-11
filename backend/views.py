@@ -116,6 +116,24 @@ def delete(request, serial):
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
+def envelopes(request):
+    return render(request, 'backend/envelopes.html', {'envelopes':Envelope.objects.all()})
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def sendEnvelope(request):
+    if request.method == 'GET':
+        bloomer = Bloomer.objects.get(username=request.user.username)
+        return render(request, 'backend/sendEnvelope.html', {'bloomer':bloomer})
+    elif request.method == 'POST':
+        sender = Bloomer.objects.get(username=request.POST['senderUsername'])
+        receiver = Bloomer.objects.get(username=request.POST['receiverUsername'])
+        text = request.POST['text']
+        Envelope.objects.create(sender=sender, receiver=receiver, text=text)
+        return redirect(reverse('backend:envelopes'))
+
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
 def series(request):
     series = Serie.objects.all()
     return render(request, 'backend/series.html', {'series':series})

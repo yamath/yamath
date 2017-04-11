@@ -14,13 +14,36 @@ def requestPostSafeGet(request, key, default=None):
     except Exception as e:
         print("requestPostGetOrNone({}, {}) \n {}".format(request, key, e))
         return default
+
+def classSafeGet(_class, key, default=None):
+    try:
+        return _class.objects.get(serial=key)
+    except:
+        try:
+            return _class.objects.get(username=key)
+        except:
+            try:
+                return _class.objects.get(name=key)
+            except:
+                try:
+                    return _class.objects.get(pk=key)
+                except:
+                    return default
+    
+def classSafeGetFromRequestPost(request, _class, _key, default=None):
+    key = requestPostSafeGet(request, _key, default)
+    return classSafeGet(Serie, key, default) or classSafeGet(Topic, key, default) or classSafeGet(Question, key, default) or classSafeGet(Option, key, default) or classSafeGet(Envelope, key, default) or classSafeGet(Classroom, key, default) or classSafeGet(Bloomer, key, default)
     
 def sendEnvelope(request):
-    sender = Bloomer.objects.get(username=request.POST['senderUsername'])
-    receiver = Bloomer.objects.get(username=request.POST['receiverUsername'])
-    text = requestPostSafeGet(request, 'text', '')
+    print("sendEnvelope", request.POST)
+    sender = classSafeGetFromRequestPost(request, Bloomer, 'senderUsername')
+    receiver = classSafeGetFromRequestPost(request, Bloomer, 'receiverUsername')
+    serie = classSafeGetFromRequestPost(request, Serie, 'serieSerial')
+    topic = classSafeGetFromRequestPost(request, Topic, 'topicSerial')
+    question = classSafeGetFromRequestPost(request, Question, 'questionSerial')
+    text = "({0}) {1}".format(requestPostSafeGet(request, 'answer', '__'), requestPostSafeGet(request, 'text', ''))
     # serie topic question option
-    Envelope.objects.create(sender=sender, receiver=receiver, text=text)
+    Envelope.objects.create(sender=sender, receiver=receiver, serie=serie, topic=topic, question=question, text=text)
     return HttpResponse("false")
 
 def loadDoneSeries(request):
@@ -35,6 +58,10 @@ def loadLateSeries(request):
     bloomer = Bloomer.objects.get(username=request.POST['username'])
     return HttpResponse(html.loadLateSeries(bloomer))
 
+def loadEnvelopes(request):
+    bloomer = Bloomer.objects.get(username=request.POST['username'])
+    return HttpResponse(html.loadEnvelopes(bloomer))
+
 def loadQuestionText(request):
     bloomer = Bloomer.objects.get(username=request.POST['username'])
     question = Question.objects.get(serial=request.POST['questionSerial'])
@@ -45,10 +72,15 @@ def loadQuestionForm(request):
     question = Question.objects.get(serial=request.POST['questionSerial'])
     return HttpResponse(html.loadQuestionForm(bloomer, question))
 
+def deleteEnvelope(request):
+    Envelope.objects.get(pk=request.POST['pk']).delete()
+    return HttpResponse('done')
+
 def chooseQuestion(request):
     bloomer = Bloomer.objects.get(username=request.POST['username'])
     serie = Serie.objects.get(serial=request.POST['serieSerial'])
-    serial = choice(sorted(serie.topics, key=lambda t: bloomer.get_mean_of_topic(t))[0].questions).serial
+    worstMean=min( bloomer.get_mean_of_topic(t) for t in serie.topics )
+    serial = choice( [ q for m in Mean.objects.filter(bloomer=bloomer) if (m.mean <= worstMean and m.topic in serie.topics) for q in m.topic.questions ] ).serial
     return HttpResponse(serial)
 
 def submitAnswer(request):
@@ -66,4 +98,4 @@ def unansweredQuestion(request):
     question = Question.objects.get(serial=request.POST['questionSerial'])
     print("ununswered", bloomer, question)
     bloomer.add_unanswered(question.topic)
-    return HttpResponse('true')
+    return HttpResponse(question.topic.serial)

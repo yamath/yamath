@@ -38,6 +38,11 @@ def loadLateSeries(bloomer):
         format(bloomer.username, serie.serial, serie.name, bloomer.get_mean_of_serie(serie))
         for serie in get_series(bloomer, 'late') ]
 
+def loadEnvelopes(bloomer):
+    return [ "<li>{1}<br /><a href='#' onClick=\"deleteEnvelope({0})\">Cancella</a></li>".\
+        format(envelope.pk, envelope.text)
+        for envelope in Envelope.objects.filter(receiver=bloomer) ]
+
 def loadQuestionText(bloomer, question):
     return "<div class='col-xs-12'>{}</div>".format(question.text)
 
@@ -50,8 +55,8 @@ def loadQuestionForm(bloomer, question):
                 bloomer.username, question.serial, 'false')]
     if question.kind == 'm':
         return "<div class='col-xs-12'>{}</div>".format(''.join([
-                "<p><a href='#' onClick=\"submitAnswer('{0}', '{1}', '{2}')\">{2}</a></p>".format(
-                    bloomer.username, question.serial, option.text)
+                "<p><a href='#' onClick=\"submitAnswer('{0}', '{1}', '{2}')\">{3}</a></p>".format(
+                    bloomer.username, question.serial, option.text.translate(str.maketrans({'\\':'\\\\'})), option.text)
                  for option in question.get_uptofive() ]))
     if question.kind == 'o':
         return "<div class='col-xs-12'><input id='questionDisplayFormInput' type='text' name='answer' autocomplete='off'/><button onClick=\"submitAnswer('{}', '{}', {})\">Invia</button></form></div>".format(

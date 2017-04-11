@@ -74,9 +74,14 @@
           }
       });
       localStorage['bloomerUsername'] = '{{ bloomer.username }}';
+      localStorage['serieSerial']='none';
+      localStorage['topicSerial']='none';
+      localStorage['questionSerial']='none';
+      localStorage['answer']='none';
       loadDoneSeries('{{ bloomer.username}}');
       loadTodoSeries('{{ bloomer.username}}');
       loadLateSeries('{{ bloomer.username}}');
+      loadEnvelopes('{{ bloomer.username}}');
     </script>
   </head>
 
@@ -179,6 +184,8 @@
         <ol id='todoSeries'></ol>
         <h3>Argomenti per il futuro</h3>
         <ol id='lateSeries'></ol>
+        <h3>Messaggi per te</h3>
+        <ol id='envelopes'></ol>
       </div>
       <div id="questionDisplay">
         <div class="container">

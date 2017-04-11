@@ -1,20 +1,43 @@
 /*global $*/
 /*global MathJax*/
 function sendEnvelope() {
-    let senderUsername = localStorage['bloomerUsername'];
-    let receiverUsername = 'admin';
-    /*serie, topic, question, option*/
     let text = prompt("Puoi inserire un messaggio per descrivere il problema:");
     $.post(
         "/bloomerprofile/ajax/sendEnvelope/",
-        {'senderUsername': senderUsername, 'receiverUsername':receiverUsername, 'text':text},
+        {
+            'senderUsername': localStorage['bloomerUsername'],
+            'receiverUsername': 'admin',
+            'serieSerial':localStorage['serieSerial'],
+            'topicSerial':localStorage['topicSerial'],
+            'questionSerial':localStorage['questionSerial'],
+            'answer':localStorage['answer'],
+            'text':text},
         function (data) {
             alert("Messaggio inviato. Grazie per la collaborazione.");
         }
     );
 }
+function deleteEnvelope(pk) {
+    $.post(
+        "/bloomerprofile/ajax/deleteEnvelope/",
+        {'pk':String(pk)},
+        function (data) {
+            loadEnvelopes(localStorage['bloomerUsername']);
+            alert("Messaggio cancellato.");
+        }
+    );
+}
 function mathjaxTypeset() {
     MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
+}
+function loadEnvelopes(bloomerUsername) {
+    $.post(
+        "/bloomerprofile/ajax/loadEnvelopes/",
+        {'username': bloomerUsername},
+        function (data) {
+            $('#envelopes').html(data);
+        }
+    );
 }
 function loadDoneSeries(bloomerUsername) {
     $('#doneSeries').hide();
@@ -77,14 +100,18 @@ function selectSerie(bloomerUsername, serieSerial) {
         confirm('Abbandonando la pagina in questo momento la domanda risulterà senza risposta. Desideri abbandonare?');
     });
     $('#messageDisplayDjango').hide()
+    localStorage['serieSerial']=serieSerial;
+    localStorage['answer']='none';
     $.post(
         "/bloomerprofile/ajax/chooseQuestion/",
         {'username':bloomerUsername, 'serieSerial':serieSerial},
         function(data){
+            localStorage['questionSerial']=data;
             $.post(
                 "/bloomerprofile/ajax/unansweredQuestion/",
                 {'username':bloomerUsername, 'questionSerial':data},
-                function(data){
+                function(data2){
+                    localStorage['topicSerial']=data2
                     return false;
                 }
             );
@@ -98,6 +125,7 @@ function selectSerie(bloomerUsername, serieSerial) {
     MathJax.Hub.Queue(['Typeset',MathJax.Hub]);
 }
 function submitAnswer(bloomerUsername, questionSerial, answer) {
+    localStorage['answer']=answer;
     $.post(
         "/bloomerprofile/ajax/submitAnswer/",
         {'username':bloomerUsername, 'questionSerial':questionSerial, 'answer':answer},

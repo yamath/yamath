@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<p><a href="{% url 'backend:index' %}">backend</a></p>
+<h1>Envelopes</h1>
+{% for envelope in envelopes %}
+<div>
+    <p>From {{ envelope.sender.username }}</p>
+    <p>To: {{ envelope.receiver.username }}</p>
+    <p>About {{ envelope.serie.name }} : {{ envelope.topic.name }} : {{ envelope.question.serial }}</p>
+    <p>{{ envelope.question.text|safe }}</p>
+    <p>{{ envelope.text }}</p>
+    <a href="{% url 'backend:sendEnvelope' %}">Rispondi</a>
+    <hr />
+</div>
+{% empty %}
+<p>No envelopes</p>
+{% endfor %}
+
+{% endblock %}

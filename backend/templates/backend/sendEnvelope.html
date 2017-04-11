@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load backend_extras %}
+
+{% block content %}
+
+<form method="post" action="{% url 'backend:sendEnvelope' %}" autocomplete="off">
+{% csrf_token %}
+    <h1>Send Envelope</h1>
+    <p>Sender <input type="text" name="senderUsername" value="{{ bloomer.username }}" /></p>
+    <p>Receiver <input type="text" name='receiverUsername' value="" /></p>
+    <p>Text <textarea name="text"></textarea></p>
+
+    <input type="submit" value="new" />
+</form>
+
+{% endblock %}
