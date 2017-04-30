@@ -1,7 +1,55 @@
-<html>
+<!DOCTYPE html>
+<html lang="it">
 <head>
+{% load static %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Applicazione di allenamento per la matematica">
+<meta name="author" content="Matteo Bortolotto">
+<title>Yamath</title>
+<!-- Bootstrap 4 -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static 'css/local.css' %}">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({extensions: ["tex2jax.js"], jax: ["input/TeX", "output/HTML-CSS"], tex2jax: {inlineMath: [ ['$','$'], ["\\(","\\)"] ], displayMath: [ ['$$','$$'], ["\\[","\\]"] ], processEscapes: true }, "HTML-CSS": { availableFonts: ["TeX"] } });</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="{% static 'js/jquery.cookie.js' %}"></script>
+<script src="{% static 'js/pre.js' %}"></script>
 </head>
 <body>
-<h1>Pagina sperimentale</h1>
+    <nav class="navbar navbar-toggleable-md fixed-top navbar-inverse bg-inverse" id="navbar">
+        <a class="navbar-brand" href="#">Yamath</a>
+    </nav>
+    <div class="container" id="messageBoard">
+        <div class="row">
+            <div class="col">
+                <div id="goodnews" class="alert alert-success" role="alert" style="display: none;"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div id="badnews" class="alert alert-danger" role="alert" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container" id="welcomeBoard" style="display: none;">
+        <div class="row">
+            <div class="col">Welcome</div>
+        </div>
+    </div>
+    <div class="container" id="activeBoard" style="display: none;">
+        <div class="row">
+            <div class="col">Active</div>
+        </div>
+    </div>
+    <div class="container" id="loadingBoard">
+        <div class="row">
+            <div class="col">...loading...</div>
+        </div>
+    </div>
+    <script src="{% static 'js/look.js' %}"></script>
+    <script src="{% static 'js/back.js' %}"></script>
 </body>
 </html>

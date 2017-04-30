@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^pendings/', views.pendings, name="pendings"),
     url(r'^pending_details/(?P<option_pk>[0-9A-Za-z]+)/', views.pending_details, name="pending_details"),
     url(r'^pending_solved/(?P<option_pk>[0-9A-Za-z]+)/', views.pending_solved, name="pending_solved"),
+    ###
     #url(r'^topic_questions/(?P<topic_serial>[0-9A-Z]+)/$', views.topic_questions, name="topic_questions"),
     #url(r'^tools/add_questionmultiple/$', views.tools_add_questionmultiple, name="tools_add_questionmultiple"),
 ]

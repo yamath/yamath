@@ -1,0 +1,21 @@
+<div>
+    {% if bloomer %}
+    <div class="jumbotron">
+        <h1 class="display-3">Benvenut@ {{ bloomer.username }}</h1>
+        <p class="lead">Questa è una versione sperimentale della pagina. Tutte le attività fatte qui, comprese risposte giuste o sbagliate, non avranno alcun effetto sul tuo profilo reale.</p>
+        <hr class="my-4">
+        <p>Utilizza tutte le funzioni, nuove o già note. Se noti qualcosa di strano, fallo presente al tuo insegnante così contribuirai ad emendare la nuova versione.</p>
+        <p class="lead">
+        <!--<a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>-->
+        </p>
+    </div>
+    {% else %}
+    <div class="jumbotron">
+        <h1 class="display-3">Benvenut@ eternauta</h1>
+        <p class="lead">Questa è una versione sperimentale della pagina. Tutte le attività fatte qui, comprese risposte giuste o sbagliate, non avranno alcun effetto sul tuo profilo reale.</p>
+        <hr class="my-4">
+        <p class="lead">Accedi al tuo fanta-profilo <a class="btn btn-primary btn-lg" href="#" role="button" onclick="look.clean('welcomeBoard', 'badnews', 'goodnews');look.hide('welcomeBoard', 'badnews', 'goodnews');look.load('activeBoard', 'command=loginForm');look.show('activeBoard');">Accedi</a></p>
+        <p class="lead">Registra un nuovo profilo <a class="btn btn-primary btn-lg" href="#" role="button">Registrati</a></p>
+    </div>
+    {% endif %}
+</div>

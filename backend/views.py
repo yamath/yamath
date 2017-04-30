@@ -8,6 +8,7 @@ from content.models import *
 import backend.models as backend
 from django.contrib import messages
 from backend.create_views import *
+from django.contrib.auth import authenticate, login
 
 @never_cache
 @user_passes_test(lambda u: u.is_superuser)
