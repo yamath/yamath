@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^bloomerprofile/', include('bloomerprofile.urls', namespace='bloomerprofile')),
     url(r'^backend/', include('backend.urls', namespace='backend')),
     url(r'^blooming/', include('blooming.urls', namespace='blooming')),
+    url(r'^experimental/', include('look.urls', namespace='look')),
 ]

@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'blooming.apps.BloomingConfig',
     'content.apps.ContentConfig',
     'bloomerprofile.apps.BloomerprofileConfig',
+    'look.apps.LookConfig',
 ]
 
 MIDDLEWARE = [
