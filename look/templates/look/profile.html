@@ -1,0 +1,46 @@
+{% load back_extras %}
+<div class="row">
+    <div class="col">
+        <h1>Profilo</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-4">
+        Nome utente:
+    </div>
+    <div class="col-xs-12 col-sm-8">
+        {{ user.legacyUsername }} {% if user.isEditor %}(editor){% elif user.isTeacher %}(insegnante){% endif %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-4">
+        Email:
+    </div>
+    <div class="col-xs-12 col-sm-8">
+        {{ user.email }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-4">
+        Nome:
+    </div>
+    <div class="col-xs-12 col-sm-8">
+        {{ user.firstName }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-4">
+        Cognome:
+    </div>
+    <div class="col-xs-12 col-sm-8">
+        {{ user.lastName }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-4">
+        Classi:
+    </div>
+    <div class="col-xs-12 col-sm-8">
+        {% for c in classrooms %}{{ c.name }}, {% endfor %}
+    </div>
+</div>

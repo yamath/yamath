@@ -1,45 +1,45 @@
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.cache import never_cache
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from random import choice
 from content.models import *
 from bloomerprofile.models import *
 import logging
+import urllib
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import ensure_csrf_cookie
+from back.orm import *
 
-@never_cache
 @ensure_csrf_cookie
+@login_required
 def main(request):
-    if request.user.is_authenticated():
-        bloomer = Bloomer.objects.get(username=request.user.username)
-    else:
-        bloomer = None
-    return render(request, 'look/main.html', {'bloomer':bloomer})
+    username=request.user.username
+    return render(request, 'look/main.html')
 
-def html(request, query):
-    qdict = { q.split('=')[0].strip():q.split('=')[1].strip() for q in query.split(';') }
-    command = qdict['command']
-    try:
-        bloomer = Bloomer.objects.get(username=qdict['username'])
-    except:
-        bloomer = None
+@login_required
+def html(request):
+    username=request.user.username
+    user = get('User', legacyUsername=username)
+    command = request.GET.get('command')
+    #print('look.views html', command, user)
     if command == '':
         pass
     elif command == 'error':
         return render(request, 'look/error.html')
-    elif command == 'loginForm':
-        return render(request, 'look/login.html')
+#    elif command == 'loginForm':
+#        return render(request, 'look/login.html')
     elif command == 'message':
-        message = qdict['message']
+        message = request.GET.get('message')
         return render(request, 'look/message.html', {'message':message})
     elif command == 'navbar':
-        return render(request, 'look/navbar.html', {'bloomer':bloomer})
-    elif command == 'notlogin':
-        return render(request, 'look/notlogin.html')
+        return render(request, 'look/navbar.html', {'user':user})
+#    elif command == 'signupForm':
+#        return render(request, 'look/signup.html')
+    elif command == 'profile':
+        classrooms = select('Classroom', lambda c: user in c.users)
+        return render(request, 'look/profile.html', {'user':user, 'classrooms':classrooms})
     elif command == 'welcomeBoard':
-        return render(request, 'look/welcomeBoard.html', {'bloomer':bloomer})
+        return render(request, 'look/welcomeBoard.html', {'user':user})
     else:
         raise Exception("/html unknown command")
     

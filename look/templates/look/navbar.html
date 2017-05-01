@@ -1,15 +1,15 @@
-{% if bloomer %}
+{% if user %}
 <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
 </button>
-<a class="navbar-brand" href="#">Yamath</a>
+<a class="navbar-brand" href="/experimental/">Yamath</a>
 <div class="collapse navbar-collapse" id="navbarCollapse">
     <ul class="navbar-nav mr-auto">
         <li class="nav-item">
             <a class="nav-link disabled" href="#">Riformula</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link disabled" href="#">Profilo</a>
+            <a class="nav-link" href="#" onclick="look.hookProfile();">Profilo</a>
         </li>
         <li class="nav-item">
             <a class="nav-link disabled" href="#">Contenuti</a>
@@ -18,7 +18,7 @@
             <a class="nav-link disabled" href="#">Messaggio</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#" onclick="look.hookLogout();">Esci</a>
+            <a class="nav-link" href="/logout">Esci</a>
         </li>
     </ul>
     <!--
@@ -29,5 +29,5 @@
     -->
 </div>
 {% else %}
-<a class="navbar-brand" href="#">Yamath</a>
+<a class="navbar-brand" href="/experimental/">Yamath</a>
 {% endif %}

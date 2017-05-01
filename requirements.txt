@@ -1,0 +1,4 @@
+transcrypt==3.6.25
+pep8==1.7.0
+pony==0.7.1
+django==1.11

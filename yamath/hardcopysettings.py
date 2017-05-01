@@ -102,3 +102,5 @@ STATIC_URL = '/static/'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+EXPERIMENTAL_DATABASE_PATH = '/home/yamatteo/bloomingmath-project/xdb.sqlite'

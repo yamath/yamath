@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <p>Per registrarsi è necessario indicare la propria mail e una parola chiave. La mail deve essere valida e non può più essere modificata. La password può essere modificata in seguito.</p>
+            <p>Il profilo appena creato non sarà attivo. Verrà inviata una mail all'indirizzo indicato con un link per attivare il profilo appena creato.</p>
+        </div>
+        <div class="col-xs-12 col-md-6">
+            <form  onsubmit="look.hide('activeBoard');look.hookSignup();">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="email">Indirizzo di posta elettronica</label>
+                <input id="inputEmail" type="email" name="email" class="form-control" placeholder="indirizzo di posta elettronica">
+              </div>
+              <div class="form-group">
+                <label for="password">Parola chiave</label>
+                <input type="password" class="form-control" id="inputPassword" name="password" placeholder="parola chiave">
+              </div>
+              <button type="submit" class="btn btn-primary">Registrati</button>
+            </form>
+        </div>
+    </div>
+</div>
