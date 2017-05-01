@@ -112,7 +112,8 @@ def get(model, pk=None, **kwargs):
         print('db get', kwargs)
         if model in ['User', 'Classroom', 'Node', 'Question', 'Topic', 'Mean', 'Envelope']:
             if 'pplain' in kwargs:
-                kwargs['phash'] = hashlib.shake_128(kwargs['pplain'].encode()).hexdigest(16)
+                #kwargs['phash'] = hashlib.shake_128(kwargs['pplain'].encode()).hexdigest(16)
+                kwargs['phash'] = hashlib.sha256(kwargs['pplain'].encode()).hexdigest()[:16]
                 del kwargs['pplain']        
             if pk:
                 return eval(model)[pk]
@@ -130,7 +131,8 @@ def new(model, **kwargs):
         print('db new', model, kwargs)
         if model in ['User', 'Classroom', 'Node', 'Question', 'Topic', 'Mean', 'Envelope']:
             if 'pplain' in kwargs:
-                kwargs['phash'] = hashlib.shake_128(kwargs['pplain'].encode()).hexdigest(16)
+                #kwargs['phash'] = hashlib.shake_128(kwargs['pplain'].encode()).hexdigest(16)
+                kwargs['phash'] = hashlib.sha256(kwargs['pplain'].encode()).hexdigest()[:16]
                 del kwargs['pplain']  
             newInstance = eval(model)(**kwargs)
             return newInstance
@@ -153,7 +155,8 @@ def update(model, pk, **kwargs):
         if model in ['User', 'Classroom', 'Node', 'Question', 'Topic', 'Mean', 'Envelope']:
             if 'pplain' in kwargs:
                 user = User[pk]
-                user.phash = hashlib.shake_128(kwargs['pplain'].encode()).hexdigest(16)
+                #user.phash = hashlib.shake_128(kwargs['pplain'].encode()).hexdigest(16)
+                user.phash = hashlib.sha256(kwargs['pplain'].encode()).hexdigest()[:16]
                 del kwargs['pplain']
             eval(model)[pk].set(**kwargs)
         else:
